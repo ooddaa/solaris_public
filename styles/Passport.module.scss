@@ -2,5 +2,38 @@
 @use 'variables.module.scss';
 
 .passport {
+  margin-top: 50px;
   color: variables.$text-primary;
+}
+
+.passport form {
+  display: flex;
+  gap: 20px
+}
+
+.passport fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: none;
+}
+
+.passport fieldset legend {
+  font-weight: 600;
+  padding-bottom: 20px;
+}
+
+.passport fieldset :nth-child(odd) {
+  margin-right: 20px;
+}
+
+/* why this doesnt work with div className="attribute-container"*/
+// .passport .attribute-container {
+//   background-color: red;
+// }
+
+.attribute-container {
+  width: 310px;
+  display: flex;
+  justify-content: space-between;
 }
