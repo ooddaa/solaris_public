@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styles from "../../styles/Passport.module.scss";
 import { Formik, FieldProps } from "formik";
-import { Tooltip, FloatingTooltip } from '@mantine/core';
-import { z } from 'zod'
+import { Tooltip, FloatingTooltip } from "@mantine/core";
+import { z } from "zod";
+import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 // interface PassportProps {
 //   type?: string; // P
@@ -28,20 +29,21 @@ const dateSchema = z.preprocess((arg) => {
 type DateSchema = z.infer<typeof dateSchema>;
 // type DateSchema = Date
 
-const sexEnum = z.enum(["M", "F", 'none']);
+const sexEnum = z.enum(["Male", "Female", "None"]);
 type SexEnum = z.infer<typeof sexEnum>;
 
 const PassportSchema = z.object({
-  type: z.string({ required_error: "Type is required", }),
+  type: z.string({ required_error: "Type is required" }),
   codeOfIssuingState: z.string(),
   passportNumber: z.string(),
-  firstName: z.string({ required_error: "First Name is required", })
+  firstName: z
+    .string({ required_error: "First Name is required" })
     .max(20, { message: "Must be less than 20 characters" }),
   lastName: z.string().max(20),
-  otherNames: z.string().max(20),
+  otherNames: z.optional(z.string().max(20)),
   // otherNames: [],
   nationality: z.string().max(20),
-  sex: sexEnum, 
+  sex: sexEnum,
   placeOfBirth: z.string().max(20),
   dateOfBirth: z.string() /* new Date(), */,
   // dateIssued: dateSchema.safeParse() /* new Date(), */,
@@ -51,7 +53,7 @@ const PassportSchema = z.object({
   otherProps: z.string(),
 });
 
-type PassportProps = z.infer<typeof PassportSchema>
+type PassportProps = z.infer<typeof PassportSchema>;
 
 const Passport = () => {
   const [passportData, setPassportData] = useState<PassportProps>({
@@ -65,77 +67,54 @@ const Passport = () => {
     nationality: "",
     placeOfBirth: "",
     dateOfBirth: "" /* new Date(), */,
-    sex: "none",
+    sex: "None",
     dateIssued: "" /* new Date(), */,
     dateExpires: "" /* new Date(), */,
     issuingAuthority: "",
     otherProps: "",
   });
 
-
-  const validation = (values:PassportProps) => {
-    const errors: { [key: string]: string } = {};
-
-    if (!values.type) {
-      errors.type = 'Required';
-    } else if (PassportSchema.parse({ type: values.type })) {
-      errors.type = 'Must be 5 characters or less';
-    }
-    // if (!values.type) {
-    //   errors.type = 'Required';
-    // } else if (values.type.length > 5) {
-    //   errors.type = 'Must be 5 characters or less';
-    // }
-
-    if (!values.firstName) {
-      errors.firstName = 'Required';
-    } else if (values.firstName.length > 15) {
-      errors.firstName = 'Must be 15 characters or less';
-    }
-
-    if (!values.lastName) {
-      errors.lastName = 'Required';
-    } else if (values.lastName.length > 15) {
-      errors.lastName = 'Must be 15 characters or less';
-    }
-
-    console.log(errors)
-    return errors;
-  }
-
   return (
     <div className={styles.passport}>
       <Formik
         initialValues={passportData}
-        validate={validation}
+        validationSchema={toFormikValidationSchema(PassportSchema)}
         onSubmit={(values, { setSubmitting }) => {
           console.log(values);
         }}
       >
-        {({ values, errors, touched, handleSubmit, handleChange, handleBlur }) => (
+        {({
+          values,
+          errors,
+          touched,
+          handleSubmit,
+          handleChange,
+          handleBlur,
+        }) => (
           <form onSubmit={handleSubmit}>
             {/* DOCUMENT SPECIFIC */}
             <fieldset>
               <legend>Document</legend>
               <div className={styles["attribute-container"]}>
                 <label htmlFor="type">Type: </label>
-                <Tooltip 
-                  position="right" 
-                  placement="center" 
-                  gutter={10} 
-                  color="red" 
-                  withArrow 
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
                   transitionDuration={10}
-                label={errors && errors.type}
-                opened={!!(touched.type && errors && errors.type)}>
-                <input
-                  type="text"
-                  id="type"
-                  name="type"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.type}
-                />
+                  label={errors && errors.type}
+                  opened={!!(touched.type && errors && errors.type)}
+                >
+                  <input
+                    type="text"
+                    id="type"
+                    name="type"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.type}
+                  />
                 </Tooltip>
               </div>
 
@@ -199,15 +178,16 @@ const Passport = () => {
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="firstName">First: </label>
-                <Tooltip 
-                  position="right" 
-                  placement="center" 
-                  gutter={10} 
-                  color="red" 
-                  withArrow 
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
                   transitionDuration={10}
-                label={errors && errors.firstName}
-                opened={!!(touched.firstName && errors && errors.firstName)}>
+                  label={errors && errors.firstName}
+                  opened={!!(touched.firstName && errors && errors.firstName)}
+                >
                   <input
                     type="text"
                     id="firstName"
@@ -220,22 +200,23 @@ const Passport = () => {
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="lastName">Last: </label>
-                <Tooltip 
-                  position="right" 
-                  placement="center" 
-                  gutter={10} 
-                  color="red" 
-                  withArrow 
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
                   transitionDuration={10}
-                label={errors && errors.lastName}
-                opened={!!(touched.lastName && errors && errors.lastName)}>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  onChange={handleChange}
-                  value={values.lastName}
-                />
+                  label={errors && errors.lastName}
+                  opened={!!(touched.lastName && errors && errors.lastName)}
+                >
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    onChange={handleChange}
+                    value={values.lastName}
+                  />
                 </Tooltip>
               </div>
 
@@ -267,8 +248,10 @@ const Passport = () => {
                   name="sex"
                   onChange={handleChange}
                   value={values.sex}
-                > 
-                  {sexEnum.options.map(sex => <option key={sex}>{sex}</option>)}
+                >
+                  {sexEnum.options.map((sex) => (
+                    <option key={sex}>{sex}</option>
+                  ))}
                 </select>
               </div>
 
