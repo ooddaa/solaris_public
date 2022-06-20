@@ -2,24 +2,56 @@ import React, { useState } from "react";
 import styles from "../../styles/Passport.module.scss";
 import { Formik, FieldProps } from "formik";
 import { Tooltip, FloatingTooltip } from '@mantine/core';
+import { z } from 'zod'
 
-interface PassportProps {
-  type?: string; // P
-  codeOfIssuingState?: string; // CountryTuple
-  passportNumber: string; // alphanumeric
-  firstName: string; // alphanumeric
-  lastName: string; // alphanumeric
-  // otherNames?: string[];
-  otherNames?: string;
-  nationality: string; // CountryTuple
-  placeOfBirth: string; // Location
-  dateOfBirth: string /* Date; */;
-  sex: string; // M/F - anything else?
-  dateIssued: string /* Date; */;
-  dateExpires: string /* Date; */;
-  issuingAuthority: string;
-  otherProps?: string;
-}
+// interface PassportProps {
+//   type?: string; // P
+//   codeOfIssuingState?: string; // CountryTuple
+//   passportNumber: string; // alphanumeric
+//   firstName: string; // alphanumeric
+//   lastName: string; // alphanumeric
+//   // otherNames?: string[];
+//   otherNames?: string;
+//   nationality: string; // CountryTuple
+//   placeOfBirth: string; // Location
+//   dateOfBirth: string /* Date; */;
+//   sex: string; // M/F - anything else?
+//   dateIssued: string /* Date; */;
+//   dateExpires: string /* Date; */;
+//   issuingAuthority: string;
+//   otherProps?: string;
+// }
+
+const dateSchema = z.preprocess((arg) => {
+  if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
+}, z.date());
+type DateSchema = z.infer<typeof dateSchema>;
+// type DateSchema = Date
+
+const sexEnum = z.enum(["M", "F", 'none']);
+type SexEnum = z.infer<typeof sexEnum>;
+
+const PassportSchema = z.object({
+  type: z.string({ required_error: "Type is required", }),
+  codeOfIssuingState: z.string(),
+  passportNumber: z.string(),
+  firstName: z.string({ required_error: "First Name is required", })
+    .max(20, { message: "Must be less than 20 characters" }),
+  lastName: z.string().max(20),
+  otherNames: z.string().max(20),
+  // otherNames: [],
+  nationality: z.string().max(20),
+  sex: sexEnum, 
+  placeOfBirth: z.string().max(20),
+  dateOfBirth: z.string() /* new Date(), */,
+  // dateIssued: dateSchema.safeParse() /* new Date(), */,
+  dateIssued: z.string() /* new Date(), */,
+  dateExpires: z.string() /* new Date(), */,
+  issuingAuthority: z.string(),
+  otherProps: z.string(),
+});
+
+type PassportProps = z.infer<typeof PassportSchema>
 
 const Passport = () => {
   const [passportData, setPassportData] = useState<PassportProps>({
@@ -33,7 +65,7 @@ const Passport = () => {
     nationality: "",
     placeOfBirth: "",
     dateOfBirth: "" /* new Date(), */,
-    sex: "",
+    sex: "none",
     dateIssued: "" /* new Date(), */,
     dateExpires: "" /* new Date(), */,
     issuingAuthority: "",
@@ -46,9 +78,14 @@ const Passport = () => {
 
     if (!values.type) {
       errors.type = 'Required';
-    } else if (values.type.length > 5) {
+    } else if (PassportSchema.parse({ type: values.type })) {
       errors.type = 'Must be 5 characters or less';
     }
+    // if (!values.type) {
+    //   errors.type = 'Required';
+    // } else if (values.type.length > 5) {
+    //   errors.type = 'Must be 5 characters or less';
+    // }
 
     if (!values.firstName) {
       errors.firstName = 'Required';
@@ -222,6 +259,19 @@ const Passport = () => {
                   value={values.nationality}
                 />
               </div>
+
+              <div className={styles["attribute-container"]}>
+                <label htmlFor="sex">Sex: </label>
+                <select
+                  id="sex"
+                  name="sex"
+                  onChange={handleChange}
+                  value={values.sex}
+                > 
+                  {sexEnum.options.map(sex => <option key={sex}>{sex}</option>)}
+                </select>
+              </div>
+
               <div className={styles["attribute-container"]}>
                 <label htmlFor="placeOfBirth">Place of birth: </label>
                 <input
