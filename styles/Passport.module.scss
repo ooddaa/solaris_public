@@ -1,0 +1,6 @@
+// https://sass-lang.com/documentation/at-rules/use
+@use 'variables.module.scss';
+
+.passport {
+  color: variables.$text-primary;
+}
