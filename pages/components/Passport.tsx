@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import styles from "../../styles/Passport.module.scss";
-import { Formik, FieldProps } from "formik";
-import { Tooltip, FloatingTooltip } from "@mantine/core";
+import { Formik, Field, getIn } from "formik";
+import { Tooltip } from "@mantine/core";
 import { z } from "zod";
-import { toFormikValidationSchema } from 'zod-formik-adapter';
-
-const dateSchema = z.preprocess((arg) => {
-  if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
-}, z.date());
-type DateSchema = z.infer<typeof dateSchema>;
-// type DateSchema = Date
+import { toFormikValidationSchema } from "zod-formik-adapter";
+import isArray from "lodash/isArray";
 
 const sexEnum = z.enum(["Male", "Female", "None"]);
 type SexEnum = z.infer<typeof sexEnum>;
@@ -20,27 +15,29 @@ type TypeEnum = z.infer<typeof typeEnum>;
 const codeOfIssuingStateEnum = z.enum(["ISR", "RUS", "GBR", " "]);
 type CodeOfIssuingStateEnum = z.infer<typeof codeOfIssuingStateEnum>;
 
+interface FieldAttributeProps {
+  type: "text" | "date" | "select" | "textarea",
+  name: string,
+  label: string,
+  options?: string[],
+}
+
 const PassportSchema = z.object({
   type: typeEnum,
-  // codeOfIssuingState: z.string().max(20), // list of state codes
   codeOfIssuingState: codeOfIssuingStateEnum, // list of state codes
   passportNumber: z.string().max(20),
-  idNumber: z.optional(z.string().max(20)), // Israeli passport
-  firstName: z
-    .string()
-    .max(20),
+  idNumber: z.string().max(20).optional(), // Israeli passport
+  firstName: z.string().max(20),
   lastName: z.string().max(20),
-  otherNames: z.optional(z.string().max(20)),
-  // otherNames: [],
+  otherNames: z.string().max(20).optional(),
   nationality: z.string().max(20),
   sex: sexEnum,
   placeOfBirth: z.string().max(20),
-  dateOfBirth: z.string() /* new Date(), */,
-  // dateIssued: dateSchema.safeParse() /* new Date(), */,
-  dateIssued: z.string() /* new Date(), */,
-  dateExpires: z.string() /* new Date(), */,
+  dateOfBirth: z.string(),
+  dateIssued: z.string(),
+  dateExpires: z.string(),
   issuingAuthority: z.string().max(20),
-  otherProps: z.optional(z.string().max(20)),
+  otherProps: z.string().max(20).optional(),
 });
 
 type PassportProps = z.infer<typeof PassportSchema>;
@@ -53,16 +50,83 @@ const Passport = () => {
     firstName: "",
     lastName: "",
     otherNames: "",
-    // otherNames: [],
     nationality: "",
     placeOfBirth: "",
-    dateOfBirth: "" /* new Date(), */,
+    dateOfBirth: "",
     sex: "None",
-    dateIssued: "" /* new Date(), */,
-    dateExpires: "" /* new Date(), */,
+    dateIssued: "",
+    dateExpires: "",
     issuingAuthority: "",
     otherProps: "",
   });
+
+  const docSpecific: FieldAttributeProps[] = [
+    { type: "text", name: "type", label: "Type" },
+    {
+      type: "text",
+      name: "codeOfIssuingState",
+      label: "Issuing State",
+    },
+    {
+      type: "text",
+      name: "passportNumber",
+      label: "Passport Number",
+    },
+    {
+      type: "date",
+      name: "dateIssued",
+      label: "Date Issued",
+    },
+    {
+      type: "date",
+      name: "dateExpires",
+      label: "Date Expires",
+    },
+    {
+      type: "text",
+      name: "issuingAuthority",
+      label: "Issuing Authority",
+    },
+  ];
+
+  const personal: FieldAttributeProps[] = [
+    {
+      type: "text",
+      name: "firstName",
+      label: "First name",
+    },
+    {
+      type: "text",
+      name: "lastName",
+      label: "Last name",
+    },
+    {
+      type: "text",
+      name: "otherNames",
+      label: "Other names",
+    },
+    {
+      type: "text",
+      name: "nationality",
+      label: "Nationality",
+    },
+    {
+      type: "select",
+      name: "sex",
+      label: "Sex",
+      options: sexEnum.options,
+    },
+    {
+      type: "text",
+      name: "placeOfBirth",
+      label: "Place of birth",
+    },
+    {
+      type: "date",
+      name: "dateOfBirth",
+      label: "Date of birth",
+    },
+  ];
 
   return (
     <div className={styles.passport}>
@@ -80,278 +144,19 @@ const Passport = () => {
           handleSubmit,
           handleChange,
           handleBlur,
-          getFieldProps
+          getFieldProps,
         }) => (
           <form onSubmit={handleSubmit}>
             {/* DOCUMENT SPECIFIC */}
             <fieldset>
               <legend>Document</legend>
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="type">Type: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.type}
-                  opened={!!(touched.type && errors && errors.type)}
-                >
-                  <input
-                    type="text"
-                    id="type"
-                    {...getFieldProps('type')}
-                  />
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="codeOfIssuingState">Issuing State: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.codeOfIssuingState}
-                  opened={!!(touched.codeOfIssuingState && errors && errors.codeOfIssuingState)}
-                >
-                <select
-                  id="codeOfIssuingState"
-                  {...getFieldProps('codeOfIssuingState')}
-                >
-                  {codeOfIssuingStateEnum.options.map((state) => (
-                    <option key={state}>{state}</option>
-                  ))}
-                </select>
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="passportNumber">Passport Number: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.passportNumber}
-                  opened={!!(touched.passportNumber && errors && errors.passportNumber)}
-                >
-                <input
-                  type="text"
-                  id="passportNumber"
-                  {...getFieldProps('passportNumber')}
-                />
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="dateIssued">Date Issued: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.dateIssued}
-                  opened={!!(touched.dateIssued && errors && errors.dateIssued)}
-                >
-                <input
-                  type="date"
-                  id="dateIssued"
-                  {...getFieldProps('dateIssued')}
-                />
-                </Tooltip>
-              </div>
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="dateExpires">Date Expires: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.dateExpires}
-                  opened={!!(touched.dateExpires && errors && errors.dateExpires)}
-                >
-                <input
-                  type="date"
-                  id="dateExpires"
-                  {...getFieldProps('dateExpires')}
-                />
-                </Tooltip>
-              </div>
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="issuingAuthority">Issuing Authority: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.issuingAuthority}
-                  opened={!!(touched.issuingAuthority && errors && errors.issuingAuthority)}
-                >
-                <input
-                  type="text"
-                  id="issuingAuthority"
-                  {...getFieldProps('issuingAuthority')}
-                />
-                </Tooltip>
-              </div>
+              {fieldFabricWorker(docSpecific, errors, touched)}
             </fieldset>
 
             {/* PERSONAL */}
             <fieldset>
               <legend>Personal</legend>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="firstName">First name: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.firstName}
-                  opened={!!(touched.firstName && errors && errors.firstName)}
-                >
-                  <input
-                    type="text"
-                    id="firstName"
-                    {...getFieldProps('firstName')}
-                  />
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="lastName">Last Name: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.lastName}
-                  opened={!!(touched.lastName && errors && errors.lastName)}
-                >
-                  <input
-                    type="text"
-                    id="lastName"
-                    {...getFieldProps('lastName')}
-                  />
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="otherNames">Other names: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.otherNames}
-                  opened={!!(touched.otherNames && errors && errors.otherNames)}
-                >
-                <input
-                  type="text"
-                  id="otherNames"
-                  {...getFieldProps('otherNames')}
-                />
-                </Tooltip>
-              </div>
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="nationality">Nationality: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.nationality}
-                  opened={!!(touched.nationality && errors && errors.nationality)}
-                >
-                <input
-                  type="text"
-                  id="nationality"
-                  {...getFieldProps('nationality')}
-                />
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="sex">Sex: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.sex}
-                  opened={!!(touched.sex && errors && errors.sex)}
-                >
-                <select
-                  id="sex"
-                  {...getFieldProps('sex')}
-                >
-                  {sexEnum.options.map((sex) => (
-                    <option key={sex}>{sex}</option>
-                  ))}
-                </select>
-                </Tooltip>
-              </div>
-
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="placeOfBirth">Place of birth: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.placeOfBirth}
-                  opened={!!(touched.placeOfBirth && errors && errors.placeOfBirth)}
-                >
-                <input
-                  type="text"
-                  id="placeOfBirth"
-                  {...getFieldProps('placeOfBirth')}
-                />
-                </Tooltip>
-              </div>
-              <div className={styles["attribute-container"]}>
-                <label htmlFor="dateOfBirth">Date of birth: </label>
-                <Tooltip
-                  position="right"
-                  placement="center"
-                  gutter={10}
-                  color="red"
-                  withArrow
-                  transitionDuration={10}
-                  label={errors && errors.dateOfBirth}
-                  opened={!!(touched.dateOfBirth && errors && errors.dateOfBirth)}
-                >
-                <input
-                  type="date"
-                  id="dateOfBirth"
-                  {...getFieldProps('dateOfBirth')}
-                />
-                </Tooltip>
-              </div>
+              {fieldFabricWorker(personal, errors, touched)}
             </fieldset>
             <button type="submit">Submit</button>
           </form>
@@ -360,5 +165,47 @@ const Passport = () => {
     </div>
   );
 };
+
+function fieldFabricWorker(attributes: FieldAttributeProps[], errors: Object, touched: Object) {
+  return attributes.map(({ type, name, label, options }: FieldAttributeProps) => {
+    if (!["text", "date", "select"].includes(type)) {
+      throw new Error(`Unsupported type: ${type}. Must be text | date.`);
+    }
+    return (
+      <div key={name} className={styles["attribute-container"]}>
+        <label htmlFor={name}>{label}: </label>
+        <Tooltip
+          position="right"
+          placement="center"
+          gutter={10}
+          color="red"
+          withArrow
+          transitionDuration={10}
+          label={errors && getIn(errors, name)}
+          opened={
+            !!(getIn(touched, name) && errors && getIn(errors, name))
+          }
+        >
+          {["text", "date"].includes(type) ? (
+            <Field name={name} type={type} />
+          ) : (
+            <Field name={name} as={type}>
+              {type === "select" &&
+                options &&
+                isArray(options) &&
+                options.map((option: any) => {
+                  return (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  );
+                })}
+            </Field>
+          )}
+        </Tooltip>
+      </div>
+    );
+  });
+}
 
 export default Passport;
