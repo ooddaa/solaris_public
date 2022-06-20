@@ -5,24 +5,6 @@ import { Tooltip, FloatingTooltip } from "@mantine/core";
 import { z } from "zod";
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
-// interface PassportProps {
-//   type?: string; // P
-//   codeOfIssuingState?: string; // CountryTuple
-//   passportNumber: string; // alphanumeric
-//   firstName: string; // alphanumeric
-//   lastName: string; // alphanumeric
-//   // otherNames?: string[];
-//   otherNames?: string;
-//   nationality: string; // CountryTuple
-//   placeOfBirth: string; // Location
-//   dateOfBirth: string /* Date; */;
-//   sex: string; // M/F - anything else?
-//   dateIssued: string /* Date; */;
-//   dateExpires: string /* Date; */;
-//   issuingAuthority: string;
-//   otherProps?: string;
-// }
-
 const dateSchema = z.preprocess((arg) => {
   if (typeof arg == "string" || arg instanceof Date) return new Date(arg);
 }, z.date());
@@ -32,13 +14,21 @@ type DateSchema = z.infer<typeof dateSchema>;
 const sexEnum = z.enum(["Male", "Female", "None"]);
 type SexEnum = z.infer<typeof sexEnum>;
 
+const typeEnum = z.enum(["P", "ID"]);
+type TypeEnum = z.infer<typeof typeEnum>;
+
+const codeOfIssuingStateEnum = z.enum(["ISR", "RUS", "GBR", " "]);
+type CodeOfIssuingStateEnum = z.infer<typeof codeOfIssuingStateEnum>;
+
 const PassportSchema = z.object({
-  type: z.string({ required_error: "Type is required" }),
-  codeOfIssuingState: z.string(),
-  passportNumber: z.string(),
+  type: typeEnum,
+  // codeOfIssuingState: z.string().max(20), // list of state codes
+  codeOfIssuingState: codeOfIssuingStateEnum, // list of state codes
+  passportNumber: z.string().max(20),
+  idNumber: z.optional(z.string().max(20)), // Israeli passport
   firstName: z
-    .string({ required_error: "First Name is required" })
-    .max(20, { message: "Must be less than 20 characters" }),
+    .string()
+    .max(20),
   lastName: z.string().max(20),
   otherNames: z.optional(z.string().max(20)),
   // otherNames: [],
@@ -49,16 +39,16 @@ const PassportSchema = z.object({
   // dateIssued: dateSchema.safeParse() /* new Date(), */,
   dateIssued: z.string() /* new Date(), */,
   dateExpires: z.string() /* new Date(), */,
-  issuingAuthority: z.string(),
-  otherProps: z.string(),
+  issuingAuthority: z.string().max(20),
+  otherProps: z.optional(z.string().max(20)),
 });
 
 type PassportProps = z.infer<typeof PassportSchema>;
 
 const Passport = () => {
   const [passportData, setPassportData] = useState<PassportProps>({
-    type: "",
-    codeOfIssuingState: "",
+    type: "P",
+    codeOfIssuingState: " ",
     passportNumber: "",
     firstName: "",
     lastName: "",
@@ -90,6 +80,7 @@ const Passport = () => {
           handleSubmit,
           handleChange,
           handleBlur,
+          getFieldProps
         }) => (
           <form onSubmit={handleSubmit}>
             {/* DOCUMENT SPECIFIC */}
@@ -110,65 +101,110 @@ const Passport = () => {
                   <input
                     type="text"
                     id="type"
-                    name="type"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.type}
+                    {...getFieldProps('type')}
                   />
                 </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="codeOfIssuingState">Issuing State: </label>
-                <input
-                  type="text"
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.codeOfIssuingState}
+                  opened={!!(touched.codeOfIssuingState && errors && errors.codeOfIssuingState)}
+                >
+                <select
                   id="codeOfIssuingState"
-                  name="codeOfIssuingState"
-                  onChange={handleChange}
-                  value={values.codeOfIssuingState}
-                />
+                  {...getFieldProps('codeOfIssuingState')}
+                >
+                  {codeOfIssuingStateEnum.options.map((state) => (
+                    <option key={state}>{state}</option>
+                  ))}
+                </select>
+                </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="passportNumber">Passport Number: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.passportNumber}
+                  opened={!!(touched.passportNumber && errors && errors.passportNumber)}
+                >
                 <input
                   type="text"
                   id="passportNumber"
-                  name="passportNumber"
-                  onChange={handleChange}
-                  value={values.passportNumber}
+                  {...getFieldProps('passportNumber')}
                 />
+                </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="dateIssued">Date Issued: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.dateIssued}
+                  opened={!!(touched.dateIssued && errors && errors.dateIssued)}
+                >
                 <input
                   type="date"
                   id="dateIssued"
-                  name="dateIssued"
-                  onChange={handleChange}
-                  value={values.dateIssued}
+                  {...getFieldProps('dateIssued')}
                 />
+                </Tooltip>
               </div>
               <div className={styles["attribute-container"]}>
                 <label htmlFor="dateExpires">Date Expires: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.dateExpires}
+                  opened={!!(touched.dateExpires && errors && errors.dateExpires)}
+                >
                 <input
                   type="date"
                   id="dateExpires"
-                  name="dateExpires"
-                  onChange={handleChange}
-                  value={values.dateExpires}
+                  {...getFieldProps('dateExpires')}
                 />
+                </Tooltip>
               </div>
               <div className={styles["attribute-container"]}>
                 <label htmlFor="issuingAuthority">Issuing Authority: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.issuingAuthority}
+                  opened={!!(touched.issuingAuthority && errors && errors.issuingAuthority)}
+                >
                 <input
                   type="text"
                   id="issuingAuthority"
-                  name="issuingAuthority"
-                  onChange={handleChange}
-                  value={values.issuingAuthority}
+                  {...getFieldProps('issuingAuthority')}
                 />
+                </Tooltip>
               </div>
             </fieldset>
 
@@ -177,7 +213,7 @@ const Passport = () => {
               <legend>Personal</legend>
 
               <div className={styles["attribute-container"]}>
-                <label htmlFor="firstName">First: </label>
+                <label htmlFor="firstName">First name: </label>
                 <Tooltip
                   position="right"
                   placement="center"
@@ -191,15 +227,13 @@ const Passport = () => {
                   <input
                     type="text"
                     id="firstName"
-                    name="firstName"
-                    onChange={handleChange}
-                    value={values.firstName}
+                    {...getFieldProps('firstName')}
                   />
                 </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
-                <label htmlFor="lastName">Last: </label>
+                <label htmlFor="lastName">Last Name: </label>
                 <Tooltip
                   position="right"
                   placement="center"
@@ -213,67 +247,110 @@ const Passport = () => {
                   <input
                     type="text"
                     id="lastName"
-                    name="lastName"
-                    onChange={handleChange}
-                    value={values.lastName}
+                    {...getFieldProps('lastName')}
                   />
                 </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
-                <label htmlFor="otherNames">Others: </label>
+                <label htmlFor="otherNames">Other names: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.otherNames}
+                  opened={!!(touched.otherNames && errors && errors.otherNames)}
+                >
                 <input
                   type="text"
                   id="otherNames"
-                  name="otherNames"
-                  onChange={handleChange}
-                  value={values.otherNames}
+                  {...getFieldProps('otherNames')}
                 />
+                </Tooltip>
               </div>
               <div className={styles["attribute-container"]}>
                 <label htmlFor="nationality">Nationality: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.nationality}
+                  opened={!!(touched.nationality && errors && errors.nationality)}
+                >
                 <input
                   type="text"
                   id="nationality"
-                  name="nationality"
-                  onChange={handleChange}
-                  value={values.nationality}
+                  {...getFieldProps('nationality')}
                 />
+                </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="sex">Sex: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.sex}
+                  opened={!!(touched.sex && errors && errors.sex)}
+                >
                 <select
                   id="sex"
-                  name="sex"
-                  onChange={handleChange}
-                  value={values.sex}
+                  {...getFieldProps('sex')}
                 >
                   {sexEnum.options.map((sex) => (
                     <option key={sex}>{sex}</option>
                   ))}
                 </select>
+                </Tooltip>
               </div>
 
               <div className={styles["attribute-container"]}>
                 <label htmlFor="placeOfBirth">Place of birth: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.placeOfBirth}
+                  opened={!!(touched.placeOfBirth && errors && errors.placeOfBirth)}
+                >
                 <input
                   type="text"
                   id="placeOfBirth"
-                  name="placeOfBirth"
-                  onChange={handleChange}
-                  value={values.placeOfBirth}
+                  {...getFieldProps('placeOfBirth')}
                 />
+                </Tooltip>
               </div>
               <div className={styles["attribute-container"]}>
                 <label htmlFor="dateOfBirth">Date of birth: </label>
+                <Tooltip
+                  position="right"
+                  placement="center"
+                  gutter={10}
+                  color="red"
+                  withArrow
+                  transitionDuration={10}
+                  label={errors && errors.dateOfBirth}
+                  opened={!!(touched.dateOfBirth && errors && errors.dateOfBirth)}
+                >
                 <input
                   type="date"
                   id="dateOfBirth"
-                  name="dateOfBirth"
-                  onChange={handleChange}
-                  value={values.dateOfBirth}
+                  {...getFieldProps('dateOfBirth')}
                 />
+                </Tooltip>
               </div>
             </fieldset>
             <button type="submit">Submit</button>
