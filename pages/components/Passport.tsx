@@ -5,6 +5,7 @@ import { Tooltip } from "@mantine/core";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import isArray from "lodash/isArray";
+import axios from "axios";
 
 const sexEnum = z.enum(["Male", "Female", "None"]);
 type SexEnum = z.infer<typeof sexEnum>;
@@ -38,9 +39,10 @@ const PassportSchema = z.object({
   dateExpires: z.string(),
   issuingAuthority: z.string().max(20),
   otherProps: z.string().max(20).optional(),
+  // OTHERPROP: z.string().max(20).optional(),
 });
 
-type PassportProps = z.infer<typeof PassportSchema>;
+export type PassportProps = z.infer<typeof PassportSchema>;
 
 const Passport = () => {
   const [passportData, setPassportData] = useState<PassportProps>({
@@ -58,6 +60,7 @@ const Passport = () => {
     dateExpires: "",
     issuingAuthority: "",
     otherProps: "",
+    // OTHERPROP: "lol",
   });
 
   const docSpecific: FieldAttributeProps[] = [
@@ -128,13 +131,21 @@ const Passport = () => {
     },
   ];
 
+  const writeToNeo4j = async (values: PassportProps) => {
+    try {
+      const rv = await axios.post('/api/storePassport', values )
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <div className={styles.passport}>
       <Formik
         initialValues={passportData}
         validationSchema={toFormikValidationSchema(PassportSchema)}
-        onSubmit={(values, { setSubmitting }) => {
-          console.log(values);
+        onSubmit={async (values, { setSubmitting }) => {
+          await writeToNeo4j(values);
         }}
       >
         {({
