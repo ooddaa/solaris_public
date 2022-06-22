@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import styles from "../../styles/Passport.module.scss";
-import { Formik, Field, getIn } from "formik";
-import { Tooltip } from "@mantine/core";
+import { Formik } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import isArray from "lodash/isArray";
+import { fieldFabric, FieldAttributeProps } from "./FieldFabric";
 import axios from "axios";
 
 const sexEnum = z.enum(["Male", "Female", "None"]);
@@ -15,13 +14,6 @@ const typeEnum = z.enum(["P", "ID"]);
 
 const codeOfIssuingStateEnum = z.enum(["ISR", "RUS", "GBR", "unknown"]);
 // type CodeOfIssuingStateEnum = z.infer<typeof codeOfIssuingStateEnum>;
-
-interface FieldAttributeProps {
-  type: "text" | "date" | "select" | "textarea",
-  name: string,
-  label: string,
-  options?: string[],
-}
 
 /**
  * There are two layers of "required props" expressed via schema. 
@@ -65,26 +57,7 @@ const PassportSchema = z.object({
   placeOfBirth: z.string().max(20),
   dateOfBirth: z.string(),
   otherProps: z.string().max(20).optional(),
-  // OTHERPROP: z.string().max(20).optional(),
 });
-
-
-
-function optionalKeys<Schema extends z.SomeZodObject>(
-  objectSchema: Schema
-): string[] {
-  return Object.entries(objectSchema.shape).reduce(
-    (acc: string[], [key, value]) => {
-      if (value.isOptional()) {
-        return [...acc, key];
-      }
-      return acc;
-    },
-    []
-  );
-}
-
-// console.log(optionalKeys(PassportSchema))
 
 export type PassportProps = z.infer<typeof PassportSchema>;
 
@@ -207,13 +180,13 @@ const Passport = () => {
             {/* DOCUMENT SPECIFIC */}
             <fieldset>
               <legend>Document</legend>
-              {fieldFabricWorker(docSpecific, errors, touched)}
+              {fieldFabric(docSpecific, errors, touched)}
             </fieldset>
 
             {/* PERSONAL */}
             <fieldset>
               <legend>Personal</legend>
-              {fieldFabricWorker(personal, errors, touched)}
+              {fieldFabric(personal, errors, touched)}
             </fieldset>
             <button type="submit">Submit</button>
           </form>
@@ -222,47 +195,5 @@ const Passport = () => {
     </div>
   );
 };
-
-function fieldFabricWorker(attributes: FieldAttributeProps[], errors: Object, touched: Object) {
-  return attributes.map(({ type, name, label, options }: FieldAttributeProps) => {
-    if (!["text", "date", "select"].includes(type)) {
-      throw new Error(`Unsupported type: ${type}. Must be text | date.`);
-    }
-    return (
-      <div key={name} className={styles["attribute-container"]}>
-        <label htmlFor={name}>{label}: </label>
-        <Tooltip
-          position="right"
-          placement="center"
-          gutter={10}
-          color="red"
-          withArrow
-          transitionDuration={10}
-          label={errors && getIn(errors, name)}
-          opened={
-            !!(getIn(touched, name) && errors && getIn(errors, name))
-          }
-        >
-          {["text", "date"].includes(type) ? (
-            <Field name={name} type={type} />
-          ) : (
-            <Field name={name} as={type}>
-              {type === "select" &&
-                options &&
-                isArray(options) &&
-                options.map((option: any) => {
-                  return (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  );
-                })}
-            </Field>
-          )}
-        </Tooltip>
-      </div>
-    );
-  });
-}
 
 export default Passport;
