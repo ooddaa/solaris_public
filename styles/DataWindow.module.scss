@@ -3,10 +3,10 @@
 .container {
   border: 1px red solid;
   width: 600px;
-  margin-top: 50px;
-  margin-left: 50px;
+  margin: 50px;
   padding: 20px;
-  // overflow-wrap: normal;
+  // overflow-wrap:unset;
   overflow: scroll;
   background-color: variables.$white;
+  // background-color: red;
 }

@@ -156,7 +156,7 @@ const Passport = ({ onData }: PassportComponentProps) => {
     try {
       const data = await axios.post('/api/storePassport', values )
       // console.log(data)
-      onData(JSON.stringify(data?.data))
+      onData(JSON.stringify(data?.data, null, 5))
     } catch (error) {
       console.error(error)
     }
@@ -172,13 +172,9 @@ const Passport = ({ onData }: PassportComponentProps) => {
         }}
       >
         {({
-          values,
           errors,
           touched,
           handleSubmit,
-          handleChange,
-          handleBlur,
-          getFieldProps,
         }) => (
           <>
           
