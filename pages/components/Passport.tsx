@@ -156,7 +156,7 @@ const Passport = ({ onData }: PassportComponentProps) => {
     try {
       const data = await axios.post('/api/storePassport', values )
       // console.log(data)
-      onData(JSON.stringify(data?.data, null, 5))
+      onData(JSON.stringify(data?.data, null, 4))
     } catch (error) {
       console.error(error)
     }

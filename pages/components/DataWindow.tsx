@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/DataWindow.module.scss";
 import { Prism } from "@mantine/prism";
+import { Tabs } from '@mantine/core';
 
 interface DataWindowProps {
   data: string
@@ -8,10 +9,14 @@ interface DataWindowProps {
 const DataWindow = ({ data }: DataWindowProps) => {
   return (
     <div className={styles.container}>
-      {/* {JSON.stringify(data)} */}
-      {/* {data} */}
-      <Prism language="tsx">{data}</Prism>
-      {/* Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quidem cupiditate, quas sunt quasi eos in aspernatur dolores ratione, fuga consequatur illum corporis? Laboriosam quidem ea obcaecati omnis sequi asperiores neque? */}
+      
+      <Tabs variant="outline">
+        <Tabs.Tab label="Neo4j response">
+          {<Prism language="tsx">{data}</Prism>}
+        </Tabs.Tab>
+        <Tabs.Tab label="Second">Second tab content</Tabs.Tab>
+        <Tabs.Tab label="Third">Third tab content</Tabs.Tab>
+      </Tabs>
     </div>
   )
 }

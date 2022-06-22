@@ -1,7 +1,9 @@
 @use 'variables.module.scss';
 
 .container {
-  border: 1px red solid;
+  border-radius: 9px;
+  box-shadow: variables.$shadow-primary;
+  min-width: 300px;
   width: 600px;
   margin: 50px;
   padding: 20px;
