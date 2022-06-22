@@ -1,0 +1,11 @@
+@use 'variables.module.scss';
+
+.container {
+  width: 100vw;
+  /* width: 1200px; */
+  height: 100vh;
+  display: flex;
+  /* flex-wrap: wrap; */
+  gap: 50px;
+  background-color: variables.$bg-primary;
+}

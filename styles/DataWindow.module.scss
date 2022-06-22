@@ -1,0 +1,12 @@
+@use 'variables.module.scss';
+
+.container {
+  border: 1px red solid;
+  width: 600px;
+  margin-top: 50px;
+  margin-left: 50px;
+  padding: 20px;
+  // overflow-wrap: normal;
+  overflow: scroll;
+  background-color: variables.$white;
+}

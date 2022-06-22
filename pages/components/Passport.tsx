@@ -60,8 +60,10 @@ const PassportSchema = z.object({
 });
 
 export type PassportProps = z.infer<typeof PassportSchema>;
-
-const Passport = () => {
+interface PassportComponentProps {
+  onData: (data: string) => void
+}
+const Passport = ({ onData }: PassportComponentProps) => {
   const [passportData, setPassportData] = useState<PassportProps>({
     TYPE: "P",
     CODE_OF_ISSUING_STATE: "unknown",
@@ -152,14 +154,16 @@ const Passport = () => {
 
   const writeToNeo4j = async (values: PassportProps) => {
     try {
-      const rv = await axios.post('/api/storePassport', values )
+      const data = await axios.post('/api/storePassport', values )
+      // console.log(data)
+      onData(JSON.stringify(data?.data))
     } catch (error) {
       console.error(error)
     }
   }
 
   return (
-    <div className={styles.passport}>
+    <div className={styles.container}>
       <Formik
         initialValues={passportData}
         validationSchema={toFormikValidationSchema(PassportSchema)}

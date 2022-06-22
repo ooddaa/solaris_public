@@ -1,29 +1,34 @@
 // https://sass-lang.com/documentation/at-rules/use
 @use 'variables.module.scss';
 
-.passport {
+.container {
   margin-top: 50px;
+  margin-left: 50px;
+  height: 500px;
+  border-radius: 9px;
+  padding: 10px;
   color: variables.$text-primary;
+  background-color: variables.$white;
 }
 
-.passport form {
+.container form {
   display: flex;
   flex-direction: column;
   gap: 50px
 }
 
-.passport fieldset {
+.container fieldset {
   display: flex;
   flex-direction: column;
   gap: 20px;
   border: none;
-  border: 1px solid lightgray;
+  // border-top: 1px solid lightgray;
   padding: 30px;
 }
 
-.passport fieldset legend {
+.container fieldset legend {
   font-weight: 600;
-  padding-bottom: 20px;
+  padding: 20px;
 }
 
 /* why this doesnt work with div className="attribute-container"*/
@@ -45,7 +50,8 @@
 
 .submitBtn {
   border: none;
-  padding: 10px 20px 
+  padding: 10px 20px;
+  margin-left: 30px;
 }
 
 .submitBtn:active {

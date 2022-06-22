@@ -1,9 +1,11 @@
 $bg-primary: rgb(228,234,241);
 $text-primary: #222;
 $green-primary: #14a995;
+$white: #fff;
 
 :export {
   bgPrimary: $bg-primary;
   textPrimary: $text-primary;
   greenPrimary: $green-primary;
+  white: $white;
 }
