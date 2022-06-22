@@ -4,18 +4,22 @@ import { Prism } from "@mantine/prism";
 import { Tabs } from '@mantine/core';
 
 interface DataWindowProps {
-  data: string
+  data: string[]
 }
 const DataWindow = ({ data }: DataWindowProps) => {
+  const tabs = data.map((datum, i) => {
+    return (<Tabs.Tab key={i} label="Neo4j response">
+    {<Prism language="tsx">{datum}</Prism>}
+  </Tabs.Tab>)
+  })
+  console.log(tabs)
   return (
     <div className={styles.container}>
       
       <Tabs variant="outline">
-        <Tabs.Tab label="Neo4j response">
-          {<Prism language="tsx">{data}</Prism>}
-        </Tabs.Tab>
-        <Tabs.Tab label="Second">Second tab content</Tabs.Tab>
-        <Tabs.Tab label="Third">Third tab content</Tabs.Tab>
+        {
+        tabs.length ? tabs :  <Tabs.Tab label="Nope">No data fetched yet</Tabs.Tab>
+        }
       </Tabs>
     </div>
   )

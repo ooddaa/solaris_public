@@ -5,10 +5,10 @@ import DataWindow from "./components/DataWindow"
 import styles from '../styles/Home.module.scss'
 
 const Home: NextPage = () => {
-  const [data, setDisplayedData] = useState('no data')
+  const [data, setDisplayedData] = useState<string[]>([])
   
-  const displayData = (data: string) => {
-    setDisplayedData(data)
+  const displayData = (newData: string) => {
+    setDisplayedData([...data, newData])
   }
   return (
     <div className={styles.container}>
