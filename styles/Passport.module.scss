@@ -8,7 +8,8 @@
 
 .passport form {
   display: flex;
-  gap: 150px
+  flex-direction: column;
+  gap: 50px
 }
 
 .passport fieldset {
@@ -36,8 +37,19 @@
   justify-content: space-between;
 }
 
-// .attribute-container div {
-//   display: flex;
-//   justify-content: flex-end;
-// }
+/* make filedsets stand next to each other */
+.fields {
+  display: flex;
+  gap: 50px;
+}
+
+.submitBtn {
+  border: none;
+  padding: 10px 20px 
+}
+
+.submitBtn:active {
+  transform: scale(.98);
+  box-shadow: inset 0 0 0 4px red;
+}
 
