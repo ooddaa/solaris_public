@@ -42,11 +42,11 @@ export default async function handler(
     const camelToSNAKE_CASE = (str:string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`).toUpperCase();
 
     /* how do I know which ones are required? */
-
+    // let rv = 'ok'
     let rv /* : Node */ = await mango.buildAndMergeNode(["Passport"], passport);
-    let rv2 /* : Node */ = await mango.buildAndMergeNode(["Passport"], passport);
+    // let rv2 /* : Node */ = await mango.buildAndMergeNode(["Passport"], passport);
     log(rv)
-    log(rv2)
+    // log(rv2)
     res.status(200).json({ success: true, data: rv })
   } catch (error) {
     console.error(error)

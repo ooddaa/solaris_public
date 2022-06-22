@@ -8,13 +8,13 @@ import isArray from "lodash/isArray";
 import axios from "axios";
 
 const sexEnum = z.enum(["Male", "Female", "None"]);
-type SexEnum = z.infer<typeof sexEnum>;
+// type SexEnum = z.infer<typeof sexEnum>;
 
 const typeEnum = z.enum(["P", "ID"]);
-type TypeEnum = z.infer<typeof typeEnum>;
+// type TypeEnum = z.infer<typeof typeEnum>;
 
-const codeOfIssuingStateEnum = z.enum(["ISR", "RUS", "GBR", " "]);
-type CodeOfIssuingStateEnum = z.infer<typeof codeOfIssuingStateEnum>;
+const codeOfIssuingStateEnum = z.enum(["ISR", "RUS", "GBR", "unknown"]);
+// type CodeOfIssuingStateEnum = z.infer<typeof codeOfIssuingStateEnum>;
 
 interface FieldAttributeProps {
   type: "text" | "date" | "select" | "textarea",
@@ -23,42 +23,52 @@ interface FieldAttributeProps {
   options?: string[],
 }
 
+/**
+ * There are two layers of "required props" expressed via schema. 
+ * 1. Neo4j level.
+ *    SNAKE_CASED   - "a required prop" which will be used to uniquely identify the Passport in Neo4j.
+ *                    We can have > 1 of required props, makes a Node constrained on set of its keys.
+ *    camelCased    - "an optional prop" - this does not affect the 'uniquness' of Passport in Neo4j.
+ * 
+ * 2. Zod level. 
+ *    The usual API to implement the form validation. 
+ * 
+ * @example
+ * [Neo4j, Zod] 
+ * [required, required]
+ * [optional, required]
+ * [optional, optional]
+ * 
+ * note that [required, optional] is not possible as we want to guarantee that users is required to 
+ * supply data that is required to make Neo4j Passport a unique entity.
+ * 
+ * We could just request one required prop - PASSPORT_NUMBER, but in terms of business domain usage, 
+ * it's never enough just to know the passport number, dates of issue/expiry, authority are always 
+ * asked for.
+ */
 const PassportSchema = z.object({
-  type: typeEnum,
-  codeOfIssuingState: codeOfIssuingStateEnum, // list of state codes
-  passportNumber: z.string().max(20),
+  /* document specific */
+  TYPE: typeEnum,
+  CODE_OF_ISSUING_STATE: codeOfIssuingStateEnum, // list of state codes
+  PASSPORT_NUMBER: z.string().max(20),
   idNumber: z.string().max(20).optional(), // Israeli passport
-  firstName: z.string().max(20),
+  nationality: z.string().max(20),
+  DATE_ISSUED: z.string(),
+  DATE_EXPIRES: z.string(),
+  ISSUING_AUTHORITY: z.string().max(20),
+  
+  /* person specific - wont */ 
+  firstName: z.string().max(20),  // required to complete Passport, but not unique identifier of a Passport in Neo4j
   lastName: z.string().max(20),
   otherNames: z.string().max(20).optional(),
-  nationality: z.string().max(20),
   sex: sexEnum,
   placeOfBirth: z.string().max(20),
   dateOfBirth: z.string(),
-  dateIssued: z.string(),
-  dateExpires: z.string(),
-  issuingAuthority: z.string().max(20),
   otherProps: z.string().max(20).optional(),
   // OTHERPROP: z.string().max(20).optional(),
 });
 
-const PassportSchemaNeo4j = z.object({
-  type: typeEnum,
-  codeOfIssuingState: codeOfIssuingStateEnum, // list of state codes
-  passportNumber: z.string().max(20),
-  idNumber: z.string().max(20).optional(), // Israeli passport
-  firstName: z.string().max(20),
-  lastName: z.string().max(20),
-  otherNames: z.string().max(20).optional(),
-  nationality: z.string().max(20),
-  sex: sexEnum,
-  placeOfBirth: z.string().max(20),
-  dateOfBirth: z.string(),
-  dateIssued: z.string(),
-  dateExpires: z.string(),
-  issuingAuthority: z.string().max(20),
-  otherProps: z.string().max(20).optional(),
-});
+
 
 function optionalKeys<Schema extends z.SomeZodObject>(
   objectSchema: Schema
@@ -77,13 +87,12 @@ function optionalKeys<Schema extends z.SomeZodObject>(
 // console.log(optionalKeys(PassportSchema))
 
 export type PassportProps = z.infer<typeof PassportSchema>;
-export type PassportPropsNeo4j = z.infer<typeof PassportSchemaNeo4j>;
 
 const Passport = () => {
   const [passportData, setPassportData] = useState<PassportProps>({
-    type: "P",
-    codeOfIssuingState: " ",
-    passportNumber: "",
+    TYPE: "P",
+    CODE_OF_ISSUING_STATE: "unknown",
+    PASSPORT_NUMBER: "",
     firstName: "",
     lastName: "",
     otherNames: "",
@@ -91,39 +100,45 @@ const Passport = () => {
     placeOfBirth: "",
     dateOfBirth: "",
     sex: "None",
-    dateIssued: "",
-    dateExpires: "",
-    issuingAuthority: "",
+    DATE_ISSUED: "",
+    DATE_EXPIRES: "",
+    ISSUING_AUTHORITY: "",
     otherProps: "",
     // OTHERPROP: "lol",
   });
 
   const docSpecific: FieldAttributeProps[] = [
-    { type: "text", name: "type", label: "Type" },
+    { type: "text", name: "TYPE", label: "Type" },
     {
-      type: "text",
-      name: "codeOfIssuingState",
+      type: "select",
+      name: "CODE_OF_ISSUING_STATE",
       label: "Issuing State",
+      options: codeOfIssuingStateEnum.options
     },
     {
       type: "text",
-      name: "passportNumber",
+      name: "PASSPORT_NUMBER",
       label: "Passport Number",
     },
     {
       type: "date",
-      name: "dateIssued",
+      name: "DATE_ISSUED",
       label: "Date Issued",
     },
     {
       type: "date",
-      name: "dateExpires",
-      label: "Date Expires",
+      name: "DATE_EXPIRES",
+      label: "Date Expires"
     },
     {
       type: "text",
-      name: "issuingAuthority",
+      name: "ISSUING_AUTHORITY",
       label: "Issuing Authority",
+    },
+    {
+      type: "text",
+      name: "nationality",
+      label: "Nationality",
     },
   ];
 
@@ -143,15 +158,11 @@ const Passport = () => {
       name: "otherNames",
       label: "Other names",
     },
-    {
-      type: "text",
-      name: "nationality",
-      label: "Nationality",
-    },
+    
     {
       type: "select",
       name: "sex",
-      label: "Sex",
+      label: "sex",
       options: sexEnum.options,
     },
     {
