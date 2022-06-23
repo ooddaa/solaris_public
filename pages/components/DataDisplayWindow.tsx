@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import styles from "../../styles/DataWindow.module.scss";
+import styles from "../../styles/DataDisplayWindow.module.scss";
 import { Prism } from "@mantine/prism";
 import { Tabs } from "@mantine/core";
 import PassportsData from './data/PassportsData'
 
-interface DataWindowProps {
+interface DataDisplayWindowProps {
   data: string[];
 }
-const DataWindow = ({ data }: DataWindowProps) => {
+const DataDisplayWindow = ({ data }: DataDisplayWindowProps) => {
 
   const [activeTab, setActiveTab] = useState(1);
 
@@ -59,4 +59,4 @@ const DataWindow = ({ data }: DataWindowProps) => {
   );
 };
 
-export default DataWindow;
+export default DataDisplayWindow;

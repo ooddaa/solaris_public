@@ -62,10 +62,10 @@ const PassportSchema = z.object({
 export type PassportProps = z.infer<typeof PassportSchema>;
 
 interface PassportFormProps {
-  onData: (data: string) => void
+  addPassport: (data: string) => void
 }
 
-const PassportForm = ({ onData }: PassportFormProps) => {
+const PassportForm = ({ addPassport }: PassportFormProps) => {
   const [passportData, setPassportData] = useState<PassportProps>({
     TYPE: "P",
     CODE_OF_ISSUING_STATE: "unknown",
@@ -157,7 +157,7 @@ const PassportForm = ({ onData }: PassportFormProps) => {
     try {
       const data = await axios.post('/api/storePassport', values )
       // console.log(data)
-      onData(JSON.stringify(data?.data, null, 4))
+      addPassport(JSON.stringify(data?.data, null, 4))
     } catch (error) {
       console.error(error)
     }
