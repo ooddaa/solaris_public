@@ -60,11 +60,12 @@ const PassportSchema = z.object({
 });
 
 export type PassportProps = z.infer<typeof PassportSchema>;
-interface PassportComponentProps {
+
+interface PassportFormProps {
   onData: (data: string) => void
 }
 
-const Passport = ({ onData }: PassportComponentProps) => {
+const PassportForm = ({ onData }: PassportFormProps) => {
   const [passportData, setPassportData] = useState<PassportProps>({
     TYPE: "P",
     CODE_OF_ISSUING_STATE: "unknown",
@@ -80,7 +81,6 @@ const Passport = ({ onData }: PassportComponentProps) => {
     DATE_EXPIRES: "2022-01-01",
     ISSUING_AUTHORITY: "MacDonalds",
     otherProps: "otherProps",
-    // OTHERPROP: "lol",
   });
 
   const docSpecific: FieldAttributeProps[] = [
@@ -205,4 +205,4 @@ const Passport = ({ onData }: PassportComponentProps) => {
   );
 };
 
-export default Passport;
+export default PassportForm;
