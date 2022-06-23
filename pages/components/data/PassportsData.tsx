@@ -26,15 +26,20 @@ function PassportsData(/* { onData }: PassportsDataProps */) {
   const [passports, setPassports] = useState<EnhancedNode[]>([])
   const getAllPassports = async () => {
     try {
-      const data: EnhancedNode[] = await axios.post('/api/getAllPassports')
-      // console.log(data)
+      const response = await axios.get('/api/getAllPassports')
+      const result = response?.data
+      if (! result.success) {
+        throw new Error(`PassportsData.getAllPassports: result was not a success.\nresult: ${JSON.stringify(result, null, 5)}`)
+      }
+      const allPassports = result.data
+      // console.log(allPassports)
 
       /* checks */
-      if (!data) return;
-      if (!isArray(data)) {
-        throw new Error(`PassportsData.getAllPassports: data is not array.\n${JSON.stringify(data, null, 5)}`)
+      if (!allPassports) return;
+      if (!isArray(allPassports)) {
+        throw new Error(`PassportsData.getAllPassports: allPassports must be array.\n${JSON.stringify(allPassports, null, 5)}`)
       }
-      setPassports(data)
+      setPassports(allPassports)
 
     } catch (error) {
       console.error(error)
@@ -45,7 +50,11 @@ function PassportsData(/* { onData }: PassportsDataProps */) {
     <div>
       <button onClick={getAllPassports}>Get all Passports</button>
       <div className={`passports-data ${styles["passports-data"]}`}>
-        {passports && passports.length && passports.map(thinkOfAGoodName)}
+        {
+          (passports && passports.length) ?
+          passports.map(thinkOfAGoodName) :
+          `passports found: ${passports.length}`
+        }
       </div>
     </div>
   );

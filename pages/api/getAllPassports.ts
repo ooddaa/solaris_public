@@ -6,8 +6,22 @@ import { mango }  from '../db/neoj4Config'
 
 type Result = {
   success: boolean
-  data: any
+  data: EnhancedNode[]
 }
+
+/**
+ * @todo this should come from Mango
+ * just mocking for now
+ */
+ type EnhancedNode = {
+  labels: string[],
+  properties: { [key: string]: string | boolean | (string[] | number[] | boolean[])},
+  identity: { low: number, high: number },
+  relationships?: {
+    inbound: any[],
+    oubound: any[],
+  }
+} 
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,10 +31,11 @@ export default async function handler(
   try {
     /* get all passports by label */
 
-    let rv /* : Node */ = await mango.findNode(["Passport"]);
-    log(rv)
+    let enodes: EnhancedNode[] = await mango.findNode(["Passport"]);
+    log(enodes)
+    /* check success */
+    res.status(200).json({ success: true, data: enodes })
 
-    res.status(200).json({ success: true, data: rv })
   } catch (error) {
     console.error(error)
     res.status(400).json({ success: false, data: [] })
