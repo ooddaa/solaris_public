@@ -12,7 +12,7 @@ export interface FieldAttributeProps {
 
 export function fieldFabric(attributes: FieldAttributeProps[], errors: Object, touched: Object) {
   return attributes.map(({ type, name, label, options }: FieldAttributeProps) => {
-    if (!["text", "date", "select"].includes(type)) {
+    if (!["text", "date", "select", "textarea"].includes(type)) {
       throw new Error(`Unsupported type: ${type}. Must be text | date.`);
     }
     return (

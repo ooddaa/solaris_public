@@ -1,0 +1,63 @@
+// https://sass-lang.com/documentation/at-rules/use
+@use 'variables.module.scss';
+
+.container {
+  margin-top: 50px;
+  // margin-left: 50px;
+  height: 500px;
+  border-radius: 9px;
+  border: 1px solid variables.$border-primary;
+  // box-shadow: variables.$shadow-primary;
+  padding: 10px;
+  color: variables.$text-primary;
+  background-color: variables.$white;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  gap: 50px
+}
+
+.container fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: none;
+  // border-top: 1px solid lightgray;
+  padding: 30px;
+}
+
+.container fieldset legend {
+  font-weight: 600;
+  padding: 20px;
+}
+
+/* why this doesnt work with div className="attribute-container"*/
+// .passport .attribute-container {
+//   background-color: red;
+// }
+
+.attribute-container {
+  width: 310px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* make filedsets stand next to each other */
+.fields {
+  display: flex;
+  gap: 50px;
+}
+
+.submitBtn {
+  border: none;
+  padding: 10px 20px;
+  margin-left: 30px;
+}
+
+.submitBtn:active {
+  transform: scale(.98);
+  box-shadow: inset 0 0 0 4px red;
+}
+

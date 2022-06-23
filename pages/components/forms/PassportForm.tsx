@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import styles from "../../../styles/PassportForm.module.scss";
 import { Formik } from "formik";
-import { PassportProps, PassportSchema } from '../../schemas/Passport'
-import { sexEnum, typeEnum, codeOfIssuingStateEnum } from '../../schemas/enums'
+import { PassportProps, PassportSchema } from "../../schemas/Passport";
+import { sexEnum, typeEnum, codeOfIssuingStateEnum } from "../../schemas/enums";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { fieldFabric, FieldAttributeProps } from "./FieldFabric";
 import axios from "axios";
 
 interface PassportFormProps {
-  addPassport: (data: string) => void
+  addPassport: (data: string) => void;
 }
 
 const PassportForm = ({ addPassport }: PassportFormProps) => {
-  const [passportData, setPassportData] = useState<PassportProps>({
+  const [passportData] = useState<PassportProps>({
     TYPE: "P",
     CODE_OF_ISSUING_STATE: "unknown",
     PASSPORT_NUMBER: "123",
@@ -35,7 +35,7 @@ const PassportForm = ({ addPassport }: PassportFormProps) => {
       type: "select",
       name: "CODE_OF_ISSUING_STATE",
       label: "Issuing State",
-      options: codeOfIssuingStateEnum.options
+      options: codeOfIssuingStateEnum.options,
     },
     {
       type: "text",
@@ -50,7 +50,7 @@ const PassportForm = ({ addPassport }: PassportFormProps) => {
     {
       type: "date",
       name: "DATE_EXPIRES",
-      label: "Date Expires"
+      label: "Date Expires",
     },
     {
       type: "text",
@@ -80,7 +80,7 @@ const PassportForm = ({ addPassport }: PassportFormProps) => {
       name: "otherNames",
       label: "Other names",
     },
-    
+
     {
       type: "select",
       name: "sex",
@@ -101,12 +101,12 @@ const PassportForm = ({ addPassport }: PassportFormProps) => {
 
   const writeToNeo4j = async (values: PassportProps) => {
     try {
-      const data = await axios.post('/api/storePassport', values )
-      addPassport(JSON.stringify(data?.data, null, 4))
+      const data = await axios.post("/api/storePassport", values);
+      addPassport(JSON.stringify(data?.data, null, 4));
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -117,33 +117,29 @@ const PassportForm = ({ addPassport }: PassportFormProps) => {
           await writeToNeo4j(values);
         }}
       >
-        {({
-          errors,
-          touched,
-          handleSubmit,
-        }) => (
+        {({ errors, touched, handleSubmit }) => (
           <>
-          
-          <form onSubmit={handleSubmit}>
-            {/* DOCUMENT SPECIFIC */}
-            <div className={styles.fields}>
-            <fieldset>
-              <legend>Document</legend>
-              {fieldFabric(docSpecific, errors, touched)}
-            </fieldset>
+            <form onSubmit={handleSubmit}>
+              {/* DOCUMENT SPECIFIC */}
+              <div className={styles.fields}>
+                <fieldset>
+                  <legend>Document</legend>
+                  {fieldFabric(docSpecific, errors, touched)}
+                </fieldset>
 
-            {/* PERSONAL */}
-            <fieldset>
-              <legend>Personal</legend>
-              {fieldFabric(personal, errors, touched)}
-            </fieldset>
-            </div>
-            <div className="buttons">
-            <button type="submit" className={styles.submitBtn}>Submit</button>
-
-            </div>
-          </form>
-            </>
+                {/* PERSONAL */}
+                <fieldset>
+                  <legend>Personal</legend>
+                  {fieldFabric(personal, errors, touched)}
+                </fieldset>
+              </div>
+              <div className="buttons">
+                <button type="submit" className={styles.submitBtn}>
+                  Submit
+                </button>
+              </div>
+            </form>
+          </>
         )}
       </Formik>
     </div>

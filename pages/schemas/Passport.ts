@@ -32,8 +32,8 @@ export const PassportSchema = z.object({
   PASSPORT_NUMBER: z.string().max(20),
   idNumber: z.string().max(20).optional(), // Israeli passport
   nationality: z.string().max(20),
-  DATE_ISSUED: z.string(),
-  DATE_EXPIRES: z.string(),
+  DATE_ISSUED: z.string().max(20),
+  DATE_EXPIRES: z.string().max(20),
   ISSUING_AUTHORITY: z.string().max(20),
   
   /* person specific - wont */ 
