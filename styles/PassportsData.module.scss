@@ -2,7 +2,38 @@
 
 .passports-data {
   width: 100%;
-  // height: 400px;
-  // height: 100%;
+  margin-top: 20px;
+  padding-top: 20px;
+  // background-color: red;
+}
+
+.passport {
+  padding: 20px;
+  margin: 10px;
+  // border: 1px black solid;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.accordeon__body .content {
+  // padding-left: calc($accordeon__head--id-width + $accordeon__head--id-margin * 2 + $accordeon__head--text-margin - $accordeon-padding);
+  padding-right: 40px;
   background-color: red;
+}
+
+.accordeon__body .content ul {
+  display: flex;
+  flex-direction: column;
+  /* gap: 12px; */
+  list-style-type: disc;
+  margin-block-start: 1rem;
+  margin-block-end: 1rem;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  color: grey
+}
+
+.accordeon__body .content li {
+  margin-bottom: 0;
 }

@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import styles from "../../../styles/PassportsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
+import { AccordeonElement } from '../AccordeonElement'
+
 
 interface PassportsDataProps {
   onData: (data: string) => void
@@ -61,8 +63,38 @@ function PassportsData(/* { onData }: PassportsDataProps */) {
 }
 
 const thinkOfAGoodName = (passport: EnhancedNode, i: number): JSX.Element => {
+  /* 
+    TYPE: "P",
+    CODE_OF_ISSUING_STATE: "unknown",
+    PASSPORT_NUMBER: "123",
+    firstName: "firstName",
+    lastName: "lastName",
+    otherNames: "otherNames",
+    nationality: "nationality",
+    placeOfBirth: "placeOfBirth",
+    dateOfBirth: "2000-01-01",
+    sex: "Male",
+    DATE_ISSUED: "2000-01-01",
+    DATE_EXPIRES: "2022-01-01",
+    ISSUING_AUTHORITY: "MacDonalds",
+    otherProps: "otherProps",
+  */
+  const { properties } = passport
+  const header = `${properties.firstName} ${properties.lastName}`
+  const body = (
+    <div className={ styles["passport-card"] } >
+      <ul>
+        <li>{properties.PASSPORT_NUMBER}</li>
+        <li>{properties.DATE_ISSUED}</li>
+        <li>{properties.DATE_EXPIRES}</li>
+        <li>{properties.CODE_OF_ISSUING_STATE}</li>
+      </ul>
+    </div>
+  )
   return (
-    <div key={i} className="passport">passport {i}</div>
+    <div key={i} className={styles.passport}>
+      <AccordeonElement id={i} header={header} body={body} />
+    </div>
   )
 }
 
