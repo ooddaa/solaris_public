@@ -15,25 +15,46 @@
   flex-direction: column;
 }
 
-
-.accordeon__body .content {
-  // padding-left: calc($accordeon__head--id-width + $accordeon__head--id-margin * 2 + $accordeon__head--text-margin - $accordeon-padding);
-  padding-right: 40px;
-  background-color: red;
+.passport-card {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px
 }
 
-.accordeon__body .content ul {
+.data-column {
+  // border: 1px solid red;
+  overflow: scroll;
+
+  table {
+    td {
+      margin: 10px;
+    }
+  }
+}
+
+.control-column {
   display: flex;
-  flex-direction: column;
-  /* gap: 12px; */
-  list-style-type: disc;
-  margin-block-start: 1rem;
-  margin-block-end: 1rem;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-  color: grey
-}
+  // justify-content: space-between;
+  flex-wrap: wrap;
+  // align-items: flex-start;
+  // align-items: center;
+  // align-items: baseline;
+  align-content: flex-start;
+  gap: 10px;
+  // background-color: aquamarine;
 
-.accordeon__body .content li {
-  margin-bottom: 0;
+  button {
+    display: inline-block;
+    border: none;
+    flex-basis: content;
+    padding: 5px 10px;
+  }
+
+  button:active {
+    background-color: red;
+  }
+
+  // button.delete--btn {
+  //     background-color: red;
+  // }
 }
