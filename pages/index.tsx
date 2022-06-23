@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import { useState } from 'react'
-import Passport from "./components/Passport"
+import Passport from "./components/forms/PassportForm"
 import DataWindow from "./components/DataWindow"
 import styles from '../styles/Home.module.scss'
 

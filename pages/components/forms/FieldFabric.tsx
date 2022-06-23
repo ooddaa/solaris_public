@@ -1,6 +1,6 @@
 import { Tooltip } from "@mantine/core";
 import { Field, getIn } from "formik";
-import styles from "../../styles/Passport.module.scss";
+import styles from "../../../styles/AttributeContainer.module.scss";
 import isArray from "lodash/isArray";
 
 export interface FieldAttributeProps {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../../styles/Passport.module.scss";
+import styles from "../../../styles/PassportForm.module.scss";
 import { Formik } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";

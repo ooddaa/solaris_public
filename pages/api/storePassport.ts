@@ -1,27 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { PassportProps } from '../components/Passport'
 
-import {
-  Engine,
-  Builder,
-  log,
-  isFailure,
-  Mango,
-  search,
-  not,
-  isNode,
-} from "mango";
-
-const engineConfig = {
-  username: "neo4j",
-  password: "pass",
-  ip: "0.0.0.0",
-  port: "7687",
-  database: "neo4j",
-};
-
-const mango = new Mango({ engineConfig });
+import { log } from "mango";
+import { mango }  from '../db/neoj4Config'
 
 type Result = {
   success: boolean
@@ -45,7 +26,7 @@ export default async function handler(
     // let rv = 'ok'
     let rv /* : Node */ = await mango.buildAndMergeNode(["Passport"], passport);
     // let rv2 /* : Node */ = await mango.buildAndMergeNode(["Passport"], passport);
-    log(rv)
+    // log(rv)
     // log(rv2)
     res.status(200).json({ success: true, data: rv })
   } catch (error) {
