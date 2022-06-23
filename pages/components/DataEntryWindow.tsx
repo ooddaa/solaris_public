@@ -3,11 +3,13 @@ import styles from "../../styles/DataEntryWindow.module.scss";
 import { Prism } from "@mantine/prism";
 import { Tabs } from "@mantine/core";
 import PassportForm from "./forms/PassportForm"
+import NaturalPersonForm from "./forms/NaturalPersonForm"
 
 interface DataEntryWindowProps {
   addPassport: (data: string) => void;
+  addNaturalPerson: (data: string) => void;
 }
-const DataEntryWindow = ({ addPassport }: DataEntryWindowProps) => {
+const DataEntryWindow = ({ addPassport, addNaturalPerson }: DataEntryWindowProps) => {
 
   const [activeTab, setActiveTab] = useState(1);
 
@@ -25,7 +27,7 @@ const DataEntryWindow = ({ addPassport }: DataEntryWindowProps) => {
         }}
       >
         <Tabs.Tab label="Person">
-          add person
+          <NaturalPersonForm addPerson={addNaturalPerson} />
         </Tabs.Tab>
         <Tabs.Tab label="Passport">
          <PassportForm addPassport={addPassport} />

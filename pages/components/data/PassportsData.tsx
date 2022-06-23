@@ -105,22 +105,24 @@ const thinkOfAGoodName = (passport: EnhancedNode, i: number): JSX.Element => {
         <li>{properties.CODE_OF_ISSUING_STATE}</li>
       </ul> */}
         <table>
-          <tr>
-            <td>Number</td>
-            <td>{properties.PASSPORT_NUMBER}</td>
-          </tr>
-          <tr>
-            <td>Date Issued </td>
-            <td>{properties.DATE_ISSUED}</td>
-          </tr>
-          <tr>
-            <td>Date Expires </td>
-            <td>{properties.DATE_EXPIRES}</td>
-          </tr>
-          <tr>
-            <td>Country </td>
-            <td>{properties.CODE_OF_ISSUING_STATE}</td>
-          </tr>
+          <tbody>
+            <tr>
+              <td>Number</td>
+              <td>{properties.PASSPORT_NUMBER}</td>
+            </tr>
+            <tr>
+              <td>Date Issued </td>
+              <td>{properties.DATE_ISSUED}</td>
+            </tr>
+            <tr>
+              <td>Date Expires </td>
+              <td>{properties.DATE_EXPIRES}</td>
+            </tr>
+            <tr>
+              <td>Country </td>
+              <td>{properties.CODE_OF_ISSUING_STATE}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div className={styles["control-column"]}>

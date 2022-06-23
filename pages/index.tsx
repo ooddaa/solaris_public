@@ -1,21 +1,32 @@
 import type { NextPage } from 'next'
 import { useState } from 'react'
-import Passport from "./components/forms/PassportForm"
 import DataDisplayWindow from "./components/DataDisplayWindow"
 import DataEntryWindow from "./components/DataEntryWindow"
 import styles from '../styles/Home.module.scss'
 
 const Home: NextPage = () => {
-  const [data, setDisplayedData] = useState<string[]>([])
+  const [passports, setPassports] = useState<string[]>([])
   
-  const addPassport = (newData: string) => {
-    setDisplayedData([...data, newData])
+  const addPassport = (newPassport: string) => {
+    setPassports([...passports, newPassport])
+  }
+
+  const [persons, setPersons] = useState<string[]>([])
+  
+  const addNaturalPerson = (newPerson: string) => {
+    setPersons([...persons, newPerson])
   }
 
   return (
     <div className={styles.container}>
-      <DataEntryWindow addPassport={addPassport}/>
-      <DataDisplayWindow data={data}/>
+      <DataEntryWindow 
+        addPassport={addPassport} 
+        addNaturalPerson={addNaturalPerson}
+      />
+      <DataDisplayWindow 
+        passports={passports}
+        persons={persons}
+      />
     </div>
   )
 }

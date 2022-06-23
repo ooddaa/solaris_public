@@ -32,7 +32,7 @@ export default async function handler(
     /* get all passports by label */
 
     let enodes: EnhancedNode[] = await mango.findNode(["Passport"]);
-    log(enodes)
+    // log(enodes)
     /* check success */
     res.status(200).json({ success: true, data: enodes })
 
