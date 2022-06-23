@@ -76,9 +76,9 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
   const writeToNeo4j = async (values: NaturalPersonProps) => {
     try {
       console.log(values)
-      // const data = await axios.post("/api/storePerson", values);
-      // console.log(data)
-      // addPerson(JSON.stringify(data?.data, null, 4));
+      const data = await axios.post("/api/addNaturalPerson", values);
+      console.log(data)
+      addPerson(JSON.stringify(data?.data, null, 4));
     } catch (error) {
       console.error(error);
     }

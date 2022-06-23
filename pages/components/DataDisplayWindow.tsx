@@ -5,10 +5,9 @@ import { Tabs } from "@mantine/core";
 import PassportsData from './data/PassportsData'
 
 interface DataDisplayWindowProps {
-  passports: string[];
-  persons: string[];
+  data: string[];
 }
-const DataDisplayWindow = ({ passports, persons }: DataDisplayWindowProps) => {
+const DataDisplayWindow = ({ data }: DataDisplayWindowProps) => {
 
   const [activeTab, setActiveTab] = useState(1);
 
@@ -17,10 +16,10 @@ const DataDisplayWindow = ({ passports, persons }: DataDisplayWindowProps) => {
   };
 
 
-  const tabs = passports.map((passport, i) => {
+  const tabs = data.map((datum, i) => {
     return (
       <Tabs.Tab key={i} label="Tab" tabKey={`tab-${i}`}>
-        {<Prism language="tsx">{passport}</Prism>}
+        {<Prism language="tsx">{datum}</Prism>}
       </Tabs.Tab>
     );
   });

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../../../styles/PassportsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
-import { AccordeonElement } from "../AccordeonElement";
+import { AccordionElement } from "../AccordionElement";
 
 interface PassportsDataProps {
   onData: (data: string) => void;
@@ -60,9 +60,9 @@ function PassportsData(/* { onData }: PassportsDataProps */) {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <button onClick={getAllPassports}>Get all Passports</button>
-      <div className={`passports-data ${styles["passports-data"]}`}>
+      <div className={`passports-data ${styles["passports-data"]} ${styles.container}`}>
         {passports && passports.length
           ? passports.map(thinkOfAGoodName)
           : `passports found: ${passports.length}`}
@@ -136,7 +136,7 @@ const thinkOfAGoodName = (passport: EnhancedNode, i: number): JSX.Element => {
   );
   return (
     <div key={i} className={styles.passport}>
-      <AccordeonElement id={i} header={header} body={body} />
+      <AccordionElement id={i} header={header} body={body} />
     </div>
   );
 };

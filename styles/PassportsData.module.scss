@@ -1,5 +1,12 @@
 @use 'variables.module.scss';
 
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .passports-data {
   width: 100%;
   margin-top: 20px;
@@ -8,8 +15,8 @@
 }
 
 .passport {
-  padding: 20px;
-  margin: 10px;
+  padding: 10px 20px;
+  // margin: 10px;
   // border: 1px black solid;
   display: flex;
   flex-direction: column;

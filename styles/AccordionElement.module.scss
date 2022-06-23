@@ -1,0 +1,93 @@
+@use "variables.module.scss";
+
+$accordion-width: 500px;
+$accordion__head--id-width: 30px;
+$accordion__head--id-margin: 15px;
+$accordion__head--text-margin: 15px;
+$accordion-padding: 25px;
+
+.accordion__elm {
+  width: $accordion-width;
+  box-shadow: 0 0 5px variables.$border-primary;
+  // border-radius: 9px;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+}
+
+.accordion__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.left {
+  display: flex;
+  flex-direction: row;
+}
+
+.accordion__head--id {
+  width: $accordion__head--id-width;
+  margin: $accordion__head--id-margin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: lightgrey;
+}
+
+.accordion__head--text {
+  margin: $accordion__head--text-margin;
+}
+
+.accordion__head--btn {
+  width: $accordion__head--id-width;
+  margin: $accordion__head--id-margin;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: green;
+}
+
+.accordion__body {
+  height: auto;
+  width: $accordion-width;
+  padding: $accordion-padding;
+  background-color: white;
+  border-bottom-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+}
+
+.open .accordion__body {
+  display: block;
+}
+
+.open .top-green-border {
+  background-color: green;
+  height: 4px;
+}
+
+.closed .accordion__body {
+  display: none;
+}
+
+.closed .top-green-border {
+  background-color: transparent;
+  height: 4px;
+}
+
+.text-green {
+  color: green;
+}
+
+.cross {
+  width: 24px;
+  height: 24px;
+}
+
+.chevron {
+  width: 24px;
+  height: 24px;
+}

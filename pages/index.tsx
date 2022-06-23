@@ -24,8 +24,9 @@ const Home: NextPage = () => {
         addNaturalPerson={addNaturalPerson}
       />
       <DataDisplayWindow 
-        passports={passports}
-        persons={persons}
+        // passports={passports}
+        // persons={persons}
+        data={[...passports, ...persons]}
       />
     </div>
   )
