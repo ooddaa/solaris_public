@@ -35,11 +35,40 @@ export default async function handler(
   /* store in Neo4j */
   try {
     const naturalPerson = req.body
-
-    /* Enhance */
-    // log(naturalPerson)
     const requiredProps: Object = getRequiredProperties(naturalPerson)
-    // log(requiredProps)
+
+    /**
+     * Version 1. Attributes are ideal. ie no copies. ie same dob is shared between twins. Place of birth is shared etc.
+     */
+
+    // const relationships = Object.entries(requiredProps)
+    //   .reduce((acc, [KEY, VALUE]) => {
+    //     return [...acc, {
+    //       labels: ["HAS_ATTRIBUTE"],
+    //       partnerNode: {
+    //         labels: ["ATTRIBUTE"],
+    //         properties: { KEY, VALUE },
+    //       },
+    //     }]
+    // }, [] as SimplifiedRelationship[])
+
+    // let rv = await mango.buildAndMergeEnhancedNode({
+    //   labels: ["NaturalPerson"], 
+    //   properties: naturalPerson,
+    //   relationships
+    // })
+
+    /**
+     * Version 2. Each Attribute belongs to only one owner.
+     * Attributes are copied, by adding a uniqueProp - owner's _hash.
+     * But for that we first need to build owner.
+     */
+
+    const owner = await mango.buildAndMergeNode(['NaturalPerson'], naturalPerson)
+
+    /* do checks */
+    if (!owner) return
+    if (!owner.getHash()) throw new Error(`addNaturalPerson: owner should have hash.\nowner: ${JSON.stringify(owner, null, 5)}`)
 
     const relationships = Object.entries(requiredProps)
       .reduce((acc, [KEY, VALUE]) => {
@@ -47,12 +76,12 @@ export default async function handler(
           labels: ["HAS_ATTRIBUTE"],
           partnerNode: {
             labels: ["ATTRIBUTE"],
-            properties: { KEY, VALUE },
+            properties: { KEY, VALUE, OWNER: owner.getHash() },
           },
         }]
     }, [] as SimplifiedRelationship[])
 
-    let rv = await mango.buildAndMergeEnhancedNode({
+    const rv = await mango.buildAndMergeEnhancedNode({
       labels: ["NaturalPerson"], 
       properties: naturalPerson,
       relationships

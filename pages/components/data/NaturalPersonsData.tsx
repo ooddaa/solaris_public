@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import styles from "../../../styles/PersonsData.module.scss";
+import styles from "../../../styles/NaturalPersonsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
 import { AccordionElement } from "../AccordionElement";
 
-interface PersonsDataProps {
+interface NaturalPersonsDataProps {
   onData: (data: string) => void;
 }
 
@@ -24,15 +24,15 @@ type EnhancedNode = {
   };
 };
 
-function PersonsData(/* { onData }: PersonsDataProps */) {
+function NaturalPersonsData(/* { onData }: NaturalPersonsDataProps */) {
   const [persons, setPersons] = useState<EnhancedNode[]>([]);
-  const getAllPersons = async () => {
+  const getAllNaturalPersons = async () => {
     try {
-      const response = await axios.get("/api/getAllPersons");
+      const response = await axios.get("/api/getAllNaturalPersons");
       const result = response?.data;
       if (!result.success) {
         throw new Error(
-          `PersonsData.getAllPersons: result was not a success.\nresult: ${JSON.stringify(
+          `NaturalPersonsData.getAllNaturalPersons: result was not a success.\nresult: ${JSON.stringify(
             result,
             null,
             5
@@ -46,7 +46,7 @@ function PersonsData(/* { onData }: PersonsDataProps */) {
       if (!allPersons) return;
       if (!isArray(allPersons)) {
         throw new Error(
-          `PersonsData.getAllPersons: allPersons must be array.\n${JSON.stringify(
+          `NaturalPersonsData.getAllNaturalPersons: allPersons must be array.\n${JSON.stringify(
             allPersons,
             null,
             5
@@ -61,7 +61,7 @@ function PersonsData(/* { onData }: PersonsDataProps */) {
 
   return (
     <div className={styles.container}>
-      <button onClick={getAllPersons}>Get all Persons</button>
+      <button onClick={getAllNaturalPersons}>Get all Persons</button>
       <div className={`persons-data ${styles["persons-data"]} ${styles.container}`}>
         {persons && persons.length
           ? persons.map(thinkOfAGoodName)
@@ -132,4 +132,4 @@ const thinkOfAGoodName = (person: EnhancedNode, i: number): JSX.Element => {
   );
 };
 
-export default PersonsData;
+export default NaturalPersonsData;
