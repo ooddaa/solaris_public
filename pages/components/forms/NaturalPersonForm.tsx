@@ -20,11 +20,11 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
   // const [naturalPersonData] = useState<NaturalPersonProps>(initialForm);
   const [naturalPersonData] = useState<NaturalPersonProps>({
     FIRST_NAME: 'lol',  // required to complete Passport, but not unique identifier of a Passport in Neo4j
-  LAST_NAME: 'aaaa',
-  SEX: 'Male',
-  PLACE_OF_BIRTH: 'here',
-  DATE_OF_BIRTH: '2020-01-01',//.regex(/[d]*4-[d]*2-[d]*2/),
-  CURRENT_ADDRESS: 'there',
+    LAST_NAME: 'aaaa',
+    SEX: 'Male',
+    PLACE_OF_BIRTH: 'here',
+    DATE_OF_BIRTH: '2020-01-01',//.regex(/[d]*4-[d]*2-[d]*2/),
+    CURRENT_ADDRESS: 'there',
   });
   // console.log(naturalPersonData)
 

@@ -3,6 +3,7 @@ import styles from "../../styles/DataDisplayWindow.module.scss";
 import { Prism } from "@mantine/prism";
 import { Tabs } from "@mantine/core";
 import PassportsData from './data/PassportsData'
+import PersonsData from './data/PersonsData'
 
 interface DataDisplayWindowProps {
   data: string[];
@@ -49,6 +50,9 @@ const DataDisplayWindow = ({ data }: DataDisplayWindowProps) => {
         </Tabs.Tab>
         <Tabs.Tab label="Passports">
           <PassportsData />
+        </Tabs.Tab>
+        <Tabs.Tab label="Persons">
+          <PersonsData />
         </Tabs.Tab>
       </Tabs>
     </div>

@@ -11,12 +11,14 @@
   padding: 10px;
   color: variables.$text-primary;
   background-color: variables.$white;
-}
 
-.container form {
-  display: flex;
-  flex-direction: column;
-  gap: 50px
+  form {
+    display: flex;
+    flex-direction: column;
+    // align-content: flex-start;
+    // justify-content: flex-start;
+    // gap: 50px
+  }
 }
 
 .container fieldset {

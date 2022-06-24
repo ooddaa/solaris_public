@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { log } from "mango";
+// import { log } from "mango";
 import { mango }  from '../db/neoj4Config'
 
 type Result = {

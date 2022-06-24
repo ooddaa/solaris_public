@@ -22,6 +22,25 @@ import { sexEnum } from './enums'
  * supply data that is required to make Neo4j NaturalPerson a unique entity.
  *
  */
+
+export const NaturalPersonSchema = z.object({
+  /* person specific - wont */ 
+  FIRST_NAME: z.string().min(1).max(50),  // required to complete Passport, but not unique identifier of a Passport in Neo4j
+  LAST_NAME: z.string().min(1).max(50),
+  otherNames: z.string().min(1).max(50).optional(),
+  nickname: z.string().min(1).max(20).optional(),
+  previousNames: z.string().min(1).max(50).optional(),
+  SEX: sexEnum,
+  PLACE_OF_BIRTH: z.string().min(1).max(50),
+  DATE_OF_BIRTH: z.string().min(1).max(10),// 'YYYY-MM-DD' .regex(/[0-9]*4-[0-9]*2-[0-9]*2/),
+  CURRENT_ADDRESS: z.string().min(1).max(100),
+  otherProps: z.string().max(20).optional(),
+});
+
+export type NaturalPersonProps = z.infer<typeof NaturalPersonSchema>;
+
+
+
 // export const NaturalPersonSchema = z.object({
 //   /* person specific - wont */ 
 //   FIRST_NAME: z.string().min(1).max(20).default('SpongeBob'),  // required to complete Passport, but not unique identifier of a Passport in Neo4j
@@ -34,17 +53,3 @@ import { sexEnum } from './enums'
 //   CURRENT_ADDRESS: z.string().min(1).max(100).default("bottom of the sea"),
 //   otherProps: z.string().max(20).optional().default('has friends'),
 // });
-export const NaturalPersonSchema = z.object({
-  /* person specific - wont */ 
-  FIRST_NAME: z.string().max(20),  // required to complete Passport, but not unique identifier of a Passport in Neo4j
-  LAST_NAME: z.string().max(20),
-  otherNames: z.string().max(20).optional(),
-  previousNames: z.string().max(50).optional(),
-  SEX: sexEnum,
-  PLACE_OF_BIRTH: z.string().max(20),
-  DATE_OF_BIRTH: z.string().max(20),//.regex(/[d]*4-[d]*2-[d]*2/),
-  CURRENT_ADDRESS: z.string().max(100),
-  otherProps: z.string().max(20).optional(),
-});
-
-export type NaturalPersonProps = z.infer<typeof NaturalPersonSchema>;
