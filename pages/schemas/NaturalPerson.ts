@@ -12,6 +12,11 @@ import { sexEnum } from './enums'
  * 2. Zod level. 
  *    The usual API to implement the form validation. 
  * 
+ * 
+ * Once sent to /api/addNaturalPerson it's transformed into EnhancedNode and saved as
+ * (NaturalPerson { ...props })-[:HAS_ATTR]->(Attribute { KEY: "FIRST_NAME", VALUE: "Whatever" })
+ * where each 'required' prop gets extracted to become an (Attribute) Node. 
+ * 
  * @example
  * [Neo4j, Zod] 
  * [required, required]

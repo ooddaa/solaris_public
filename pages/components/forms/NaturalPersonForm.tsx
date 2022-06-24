@@ -25,6 +25,9 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
     PLACE_OF_BIRTH: 'here',
     DATE_OF_BIRTH: '2020-01-01',//.regex(/[d]*4-[d]*2-[d]*2/),
     CURRENT_ADDRESS: 'there',
+    nickname: '',
+    otherNames: "",
+    previousNames:'',
   });
   // console.log(naturalPersonData)
 
@@ -41,6 +44,11 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
     },
     {
       type: "text",
+      name: "nickname",
+      label: "Nickname",
+    },
+    {
+      type: "text",
       name: "otherNames",
       label: "Other names",
     },
@@ -49,7 +57,6 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
       name: "previousNames",
       label: "Previous names",
     },
-
     {
       type: "select",
       name: "SEX",
@@ -69,7 +76,7 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
     {
       type: "text",
       name: "CURRENT_ADDRESS",
-      label: "Date of birth",
+      label: "Current address",
     },
   ];
 
