@@ -22,7 +22,7 @@ type SimplifiedRelationship = {
   partnerNode: SimplifiedNode, 
 }
 
-/*
+/**
  * Once sent to /api/addNaturalPerson it's transformed into EnhancedNode and saved as
  * (NaturalPerson { ...props })-[:HAS_ATTR]->(Attribute { KEY: "FIRST_NAME", VALUE: "Whatever" })
  * where each 'required' prop gets extracted to become an (Attribute) Node. 

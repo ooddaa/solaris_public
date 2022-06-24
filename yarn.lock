@@ -6013,10 +6013,10 @@
   dependencies:
     "tmpl" "1.0.5"
 
-"mango@npm:@ooddaa/mango@^1.1.1":
-  "integrity" "sha512-+ZxNTpO4kOSYGCwfUE9NlIZ3aO/vpVCryDLMmJtZsg0QmbElJnsiI0xVAX6TzzsnmQursj62AcCh16q0dsWLeA=="
-  "resolved" "https://registry.npmjs.org/@ooddaa/mango/-/mango-1.1.1.tgz"
-  "version" "1.1.1"
+"mango@npm:@ooddaa/mango@^1.1.2":
+  "integrity" "sha512-Mj2pCG3j397d5VWwHdBs058QT/Ptg+KsXZw2xP6ZZZ1DE2fczfYGtGg0VzC1Jq2ZfqqGUzRKVn8OtpnweB8MDg=="
+  "resolved" "https://registry.npmjs.org/@ooddaa/mango/-/mango-1.1.2.tgz"
+  "version" "1.1.2"
   dependencies:
     "lodash" "^4.17.21"
     "neo4j-driver" "^4.4.3"

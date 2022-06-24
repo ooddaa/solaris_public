@@ -9,3 +9,16 @@ export type EnhancedNode = {
     oubound: any[];
   };
 };
+
+export type SimplifiedNode = {
+  labels: string[],
+  properties: Object,
+}
+
+export type SimplifiedRelationship = {
+  labels: string[],
+  properties?: Object,
+  necessity?: "required" | "optional",
+  direction?: "outbound" | ">" | "inbound" | "<",
+  partnerNode: SimplifiedNode, 
+}

@@ -47,29 +47,29 @@ function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) 
     }
   };
 
-  const requestNaturalPersonVerifications = async (person: EnhancedNode) => {
+  const addNaturalPersonVerificationRequest = async (person: EnhancedNode) => {
     try {
-      // const response = await axios.get("/api/requestNaturalPersonVerifications");
-      // const result = response?.data;
-      // if (!result.success) {
-      //   throw new Error(
-      //     `NaturalPersonsData.requestNaturalPersonVerifications: result was not a success.\nresult: ${JSON.stringify(
-      //       result,
-      //       null,
-      //       5
-      //     )}`
-      //   );
-      // }
-      // const verificationRequests = result.data;
-      // console.log(verificationRequests)
-      // onVerificationRequest(verificationRequests)
-      onVerificationRequest({
-        labels: "string[]",
-        properties: {
-          "key": "value",
-        },
-        identity: { low: 1, high: 0 },
-      })
+      const response = await axios.post("/api/addNaturalPersonVerificationRequest", person);
+      const result = response?.data;
+      if (!result.success) {
+        throw new Error(
+          `NaturalPersonsData.addNaturalPersonVerificationRequest: result was not a success.\nresult: ${JSON.stringify(
+            result,
+            null,
+            5
+          )}`
+        );
+      }
+      const verificationRequests = result.data;
+      console.log(verificationRequests)
+      onVerificationRequest(verificationRequests)
+      // onVerificationRequest({
+      //   labels: "string[]",
+      //   properties: {
+      //     "key": "value",
+      //   },
+      //   identity: { low: 1, high: 0 },
+      // })
     } catch (error) {
       console.error(error);
     }
@@ -80,7 +80,7 @@ function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) 
       <button onClick={getAllNaturalPersons}>Get all Persons</button>
       <div className={`persons-data ${styles["persons-data"]} ${styles.container}`}>
         {persons && persons.length
-          ? persons.map((person, i) => producePersonCard(person, i, verify, toggleVerify, requestNaturalPersonVerifications))
+          ? persons.map((person, i) => producePersonCard(person, i, verify, toggleVerify, addNaturalPersonVerificationRequest))
           : `persons found: ${persons.length}`}
       </div>
     </div>
@@ -91,7 +91,7 @@ const PersonCard = () => {
 
 }
 
-const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, toggleVerify: Function, requestNaturalPersonVerifications: Function): JSX.Element => {
+const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, toggleVerify: Function, addNaturalPersonVerificationRequest: Function): JSX.Element => {
   /* 
     FIRST_NAME: 'lol',  // required to complete Passport, but not unique identifier of a Passport in Neo4j
     LAST_NAME: 'aaaa',
@@ -148,7 +148,7 @@ const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, tog
         }
         }>verify</button>
 
-        <button onClick={() => requestNaturalPersonVerifications(person)}>verify all</button>
+        <button onClick={() => addNaturalPersonVerificationRequest(person)}>verify all</button>
         <button className="delete--btn"> delete </button>
       </div>
     </div>
