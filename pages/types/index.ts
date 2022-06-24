@@ -4,10 +4,6 @@ export type Node = {
     [key: string]: string | boolean | (string[] | number[] | boolean[]);
   };
   identity: { low: number; high: number };
-  relationships?: {
-    inbound: any[];
-    oubound: any[];
-  };
 };
 export interface EnhancedNode extends Node {
   relationships?: {
@@ -17,6 +13,11 @@ export interface EnhancedNode extends Node {
   getAllRelationshipsAsArray: () => any[]
   getHash: () => string;
 };
+
+export interface Relationship extends Node {
+  startNode: Node|EnhancedNode,
+  endNode: Node|EnhancedNode,
+}
 
 export type SimplifiedNode = {
   labels: string[],

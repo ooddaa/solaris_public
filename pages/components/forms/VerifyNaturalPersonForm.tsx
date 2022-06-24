@@ -1,12 +1,12 @@
 import React from 'react'
-import { EnhancedNode} from '../../types'
+import { Relationship } from '../../types'
 import isArray from 'lodash/isArray'
 interface VerifyNaturalPersonFormProps {
-  verificationRequests: EnhancedNode[];
+  verificationRequests: Relationship[];
 }
 
-const renderVerificationRequest = (verificationRequest: EnhancedNode, i: number): JSX.Element => {
-  const { labels, properties } = verificationRequest
+const renderVerificationRequest = (verificationRequest: Relationship, i: number): JSX.Element => {
+  const { labels, properties, startNode, endNode } = verificationRequest
   /* verificationRequest is 
   Relationship {
     labels: [ 'HAS_VERIFICATION_REQUEST' ],
@@ -62,6 +62,9 @@ const renderVerificationRequest = (verificationRequest: EnhancedNode, i: number)
     <div key={i} className="verification-request">
       {/* { properties.} */}
       {JSON.stringify(properties, null, 5)}
+      <div>{JSON.stringify(properties, null, 5)}</div>
+      <div>{JSON.stringify(startNode.properties, null, 5)}</div>
+      <div>{JSON.stringify(endNode.properties, null, 5)}</div>
     </div>
   )
 }
