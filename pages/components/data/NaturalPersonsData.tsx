@@ -60,7 +60,7 @@ function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) 
           )}`
         );
       }
-      const verificationRequests = result.data;
+      const verificationRequests = result.data; // Relationship[]
       console.log(verificationRequests)
       onVerificationRequest(verificationRequests)
       // onVerificationRequest({

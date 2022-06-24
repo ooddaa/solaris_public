@@ -1,15 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { log, getRequiredProperties } from "mango";
+import { log, getRequiredProperties, Builder } from "mango";
 import { mango, engine }  from '../db/neoj4Config'
-import { SimplifiedNode, SimplifiedRelationship } from '../types'
+import { EnhancedNode, SimplifiedNode, SimplifiedRelationship, Result } from '../types'
 
-type Result = {
-  success: boolean
-  data: any
-}
-
+const builder = new Builder()
 /**
  * Gets a NaturalPerson and adds (NP)-[:HAS_ATTRIBUTE]->(Attribute)-[:HAS]->(VerificationRequest). 
  * Then Users can search for (VR)s and resolve them. 
@@ -50,36 +46,28 @@ export default async function handler(
     */
   //  const owner = await mango.findNode(naturalPerson)
 
-    const rv = await engine.enhanceNodes([naturalPerson])
+    const results: Result[] = await engine.enhanceNodes([naturalPerson])
+    const enodes: EnhancedNode[] = results[0].data
+    const attributes: EnhancedNode[] = enodes[0]?.getAllRelationshipsAsArray().map(rel => rel.getEndNode())
+    // log(attributes)
+
+    /* merge VerificationRequest */
+
+    const rv = await Promise.all(attributes.map(async (attribute: EnhancedNode) => {
+      return await mango.buildAndMergeRelationship(
+        attribute, 
+        { labels: ["HAS_VERIFICATION_REQUEST"] },
+        builder.makeNode(["VerificationRequest"], {
+          ATTRIBUTE_HASH: attribute.getHash(),
+          REQUESTER: 'Ronald MacDonald',
+          VERIFIER: 'any',
+          TIMELIMIT: false,
+          otherConditions: ['cerial killers not to bother']
+        }),
+      );
+    }))
     // log(rv)
-    // const requiredProps: Object = getRequiredProperties(naturalPerson)
-
-    // const owner = await mango.buildAndMergeNode(['NaturalPerson'], naturalPerson)
-
-    // /* do checks */
-    // if (!owner) return
-    // if (!owner.getHash()) throw new Error(`addNaturalPerson: owner should have hash.\nowner: ${JSON.stringify(owner, null, 5)}`)
-
-    // const relationships = Object.entries(requiredProps)
-    //   .reduce((acc, [KEY, VALUE]) => {
-    //     return [...acc, {
-    //       labels: ["HAS_ATTRIBUTE"],
-    //       partnerNode: {
-    //         labels: ["ATTRIBUTE"],
-    //         properties: { KEY, VALUE, OWNER: owner.getHash() },
-    //       },
-    //     }]
-    // }, [] as SimplifiedRelationship[])
-
-    // const rv = await mango.buildAndMergeEnhancedNode({
-    //   labels: ["NaturalPerson"], 
-    //   properties: naturalPerson,
-    //   relationships
-    // })
-
-    // /* how do I know which ones are required? */
-    // log(rv)
-    // res.status(200).json({ success: true, data: rv })
+    res.status(200).json({ success: true, data: rv })
   } catch (error) {
     console.error(error)
     res.status(400).json({ success: false, data: [] })
