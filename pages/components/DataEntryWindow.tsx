@@ -5,16 +5,19 @@ import { Tabs } from "@mantine/core";
 import PassportForm from "./forms/PassportForm";
 import NaturalPersonForm from "./forms/NaturalPersonForm";
 import VerifyNaturalPersonForm from "./forms/VerifyNaturalPersonForm";
-
+import { EnhancedNode } from '../types'
 interface DataEntryWindowProps {
   addPassport: (data: string) => void;
   addNaturalPerson: (data: string) => void;
-  verifyNaturalPerson: (data: string) => void;
+  verificationRequests: EnhancedNode[];
+  // verifyNaturalPerson: (data: string) => void;
 }
+
 const DataEntryWindow = ({
   addPassport,
   addNaturalPerson,
-  verifyNaturalPerson,
+  verificationRequests,
+  // verifyNaturalPerson,
 }: DataEntryWindowProps) => {
   const [activeTab, setActiveTab] = useState(1);
 
@@ -41,7 +44,7 @@ const DataEntryWindow = ({
               <NaturalPersonForm addPerson={addNaturalPerson} />
             </Tabs.Tab>
             <Tabs.Tab label="Verify NP">
-              <VerifyNaturalPersonForm verifyPerson={verifyNaturalPerson} />
+              <VerifyNaturalPersonForm verificationRequests={verificationRequests} />
             </Tabs.Tab>
           </Tabs>
         </Tabs.Tab>

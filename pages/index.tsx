@@ -3,6 +3,7 @@ import { useState } from 'react'
 import DataDisplayWindow from "./components/DataDisplayWindow"
 import DataEntryWindow from "./components/DataEntryWindow"
 import styles from '../styles/Home.module.scss'
+import { EnhancedNode } from './types'
 
 const Home: NextPage = () => {
   const [passports, setPassports] = useState<string[]>([])
@@ -17,15 +18,27 @@ const Home: NextPage = () => {
     setPersons([...persons, newPerson])
   }
 
+  const [verificationRequests, setVerificationRequests] = useState<EnhancedNode[]>([])
+
+  const onVerificationRequest = (requests: EnhancedNode[]) => {
+    setVerificationRequests(requests)
+  }
+
   return (
     <div className={styles.container}>
       <DataEntryWindow 
+        /* actions */
         addPassport={addPassport} 
         addNaturalPerson={addNaturalPerson}
+        /* data */
+        verificationRequests={verificationRequests}
       />
       <DataDisplayWindow 
         // passports={passports}
         // persons={persons}
+        /* actions */
+        onVerificationRequest={onVerificationRequest}
+        /* data */
         data={[...passports, ...persons]}
       />
     </div>

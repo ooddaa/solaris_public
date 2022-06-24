@@ -4,11 +4,13 @@ import { Prism } from "@mantine/prism";
 import { Tabs } from "@mantine/core";
 import PassportsData from './data/PassportsData'
 import NaturalPersonsData from './data/NaturalPersonsData'
+import type { EnhancedNode } from '../types'
 
 interface DataDisplayWindowProps {
   data: string[];
+  onVerificationRequest: (data: EnhancedNode[]) => void;
 }
-const DataDisplayWindow = ({ data }: DataDisplayWindowProps) => {
+const DataDisplayWindow = ({ data, onVerificationRequest }: DataDisplayWindowProps) => {
 
   const [activeTab, setActiveTab] = useState(1);
 
@@ -52,7 +54,7 @@ const DataDisplayWindow = ({ data }: DataDisplayWindowProps) => {
           <PassportsData />
         </Tabs.Tab>
         <Tabs.Tab label="Persons">
-          <NaturalPersonsData />
+          <NaturalPersonsData onVerificationRequest={onVerificationRequest}/>
         </Tabs.Tab>
       </Tabs>
     </div>

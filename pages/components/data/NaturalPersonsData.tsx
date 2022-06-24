@@ -3,29 +3,17 @@ import styles from "../../../styles/NaturalPersonsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
 import { AccordionElement } from "../AccordionElement";
+import type { EnhancedNode } from '../../types'
 
 interface NaturalPersonsDataProps {
-  onData: (data: string) => void;
+  onData?: (data: string) => void;
+  onVerificationRequest: (data: any) => void;
 }
 
-/**
- * @todo this should come from Mango
- * just mocking for now
- */
-type EnhancedNode = {
-  labels: string[];
-  properties: {
-    [key: string]: string | boolean | (string[] | number[] | boolean[]);
-  };
-  identity: { low: number; high: number };
-  relationships?: {
-    inbound: any[];
-    oubound: any[];
-  };
-};
-
-function NaturalPersonsData(/* { onData }: NaturalPersonsDataProps */) {
+function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) {
   const [persons, setPersons] = useState<EnhancedNode[]>([]);
+  const [verify, toggleVerify] = useState<boolean>(false);
+
   const getAllNaturalPersons = async () => {
     try {
       const response = await axios.get("/api/getAllNaturalPersons");
@@ -59,19 +47,51 @@ function NaturalPersonsData(/* { onData }: NaturalPersonsDataProps */) {
     }
   };
 
+  const requestNaturalPersonVerifications = async (person: EnhancedNode) => {
+    try {
+      // const response = await axios.get("/api/requestNaturalPersonVerifications");
+      // const result = response?.data;
+      // if (!result.success) {
+      //   throw new Error(
+      //     `NaturalPersonsData.requestNaturalPersonVerifications: result was not a success.\nresult: ${JSON.stringify(
+      //       result,
+      //       null,
+      //       5
+      //     )}`
+      //   );
+      // }
+      // const verificationRequests = result.data;
+      // console.log(verificationRequests)
+      // onVerificationRequest(verificationRequests)
+      onVerificationRequest({
+        labels: "string[]",
+        properties: {
+          "key": "value",
+        },
+        identity: { low: 1, high: 0 },
+      })
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className={styles.container}>
       <button onClick={getAllNaturalPersons}>Get all Persons</button>
       <div className={`persons-data ${styles["persons-data"]} ${styles.container}`}>
         {persons && persons.length
-          ? persons.map(thinkOfAGoodName)
+          ? persons.map((person, i) => producePersonCard(person, i, verify, toggleVerify, requestNaturalPersonVerifications))
           : `persons found: ${persons.length}`}
       </div>
     </div>
   );
 }
 
-const thinkOfAGoodName = (person: EnhancedNode, i: number): JSX.Element => {
+const PersonCard = () => {
+
+}
+
+const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, toggleVerify: Function, requestNaturalPersonVerifications: Function): JSX.Element => {
   /* 
     FIRST_NAME: 'lol',  // required to complete Passport, but not unique identifier of a Passport in Neo4j
     LAST_NAME: 'aaaa',
@@ -90,7 +110,9 @@ const thinkOfAGoodName = (person: EnhancedNode, i: number): JSX.Element => {
             <tr>
               <td>First Name</td>
               <td>{properties.FIRST_NAME}</td>
-              <td>5</td>
+              {verify && <td>
+                <input type='checkbox'></input>
+              </td> }
             </tr>
             <tr>
               <td>Last Name </td>
@@ -119,8 +141,14 @@ const thinkOfAGoodName = (person: EnhancedNode, i: number): JSX.Element => {
         <button>share</button>
         <button>copy</button>
         <button>edit</button>
-        <button>verify</button>
-        <button>see verifications</button>
+
+        <button onClick={() => {
+          console.log('verify', verify)
+          toggleVerify((v:boolean) => !v)
+        }
+        }>verify</button>
+
+        <button onClick={() => requestNaturalPersonVerifications(person)}>verify all</button>
         <button className="delete--btn"> delete </button>
       </div>
     </div>

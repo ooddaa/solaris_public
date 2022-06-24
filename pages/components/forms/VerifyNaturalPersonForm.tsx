@@ -1,12 +1,27 @@
 import React from 'react'
-
-interface VerifyNaturalPersonForm {
-  verifyPerson: (data: string) => void;
+import { EnhancedNode} from '../../types'
+import isArray from 'lodash/isArray'
+interface VerifyNaturalPersonFormProps {
+  verificationRequests: EnhancedNode[];
 }
 
-function VerifyNaturalPersonForm({ verifyPerson }: VerifyNaturalPersonForm) {
+const renderVerificationRequest = (verificationRequest: EnhancedNode): JSX.Element => {
+  const { labels, properties } = verificationRequest
   return (
-    <div>VerifyNaturalPersonForm</div>
+    <div className="verification-request">
+      {/* { properties.} */}
+      {JSON.stringify(properties, null, 5)}
+    </div>
+  )
+}
+
+const VerifyNaturalPersonForm = ({ verificationRequests }: VerifyNaturalPersonFormProps) => {
+  return (
+    <div>{
+      (verificationRequests && isArray(verificationRequests))? 
+      verificationRequests.map(renderVerificationRequest)
+      : 'no verification requests'
+      }</div>
   )
 }
 
