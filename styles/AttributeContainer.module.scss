@@ -1,5 +1,16 @@
-.attribute-container {
+@use 'variables.module.scss';
+.attribute-input-container {
   width: 310px;
   display: flex;
   justify-content: space-between;
+}
+
+.label {
+  line-height: 36px; // input's line height == 34 + 2px for borders
+}
+
+.text-input {
+  input {
+    color: variables.$text-primary;
+  }
 }

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import styles from "../../../styles/PassportForm.module.scss";
-import { Formik } from "formik";
+import { Form, Formik } from "formik";
 import { PassportProps, PassportSchema } from "../../schemas/Passport";
 import { sexEnum, typeEnum, codeOfIssuingStateEnum } from "../../schemas/enums";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { fieldFabric, FieldAttributeProps } from "./FieldFabric";
 import axios from "axios";
+import { Button } from "@mantine/core"
 
 interface PassportFormProps {
   addPassport: (data: string) => void;
@@ -117,28 +118,28 @@ const PassportForm = ({ addPassport }: PassportFormProps) => {
           await writeToNeo4j(values);
         }}
       >
-        {({ errors, touched, handleSubmit }) => (
+        {( formik ) => (
           <>
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={formik.handleSubmit}>
               {/* DOCUMENT SPECIFIC */}
               <div className={styles.fields}>
                 <fieldset>
                   <legend>Document</legend>
-                  {fieldFabric(docSpecific, errors, touched)}
+                  {fieldFabric(docSpecific, formik)}
                 </fieldset>
 
                 {/* PERSONAL */}
                 <fieldset>
                   <legend>Personal</legend>
-                  {fieldFabric(personal, errors, touched)}
+                  {fieldFabric(personal, formik)}
                 </fieldset>
               </div>
               <div className="buttons">
-                <button type="submit" className={styles.submitBtn}>
+                <Button type="submit" className={styles.submitBtn}>
                   Submit
-                </button>
+                </Button>
               </div>
-            </form>
+            </Form>
           </>
         )}
       </Formik>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "../../../styles/NaturalPersonForm.module.scss";
-import { Formik } from "formik";
+import { Formik, Form } from "formik";
 import {
   NaturalPersonProps,
   NaturalPersonSchema,
@@ -16,9 +16,6 @@ interface NaturalPersonFormProps {
 }
 
 const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
-  // const initialForm = NaturalPersonSchema.parse({})
-  // console.log(initialForm)
-  // const [naturalPersonData] = useState<NaturalPersonProps>(initialForm);
   const [naturalPersonData] = useState<NaturalPersonProps>({
     FIRST_NAME: 'lol',  // required to complete Passport, but not unique identifier of a Passport in Neo4j
     LAST_NAME: 'aaaa',
@@ -101,14 +98,14 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
           await writeToNeo4j(values);
         }}
       >
-        {({ errors, touched, handleSubmit }) => (
+        {( formik ) => (
           <>
-            <form onSubmit={handleSubmit}>
+            <Form onSubmit={formik.handleSubmit}>
               <div className={styles.fields}>
                 {/* PERSONAL */}
                 <fieldset>
                   <legend>Personal</legend>
-                  {fieldFabric(personal, errors, touched)}
+                  {fieldFabric(personal, formik)}
                 </fieldset>
               </div>
               <div className="buttons">
@@ -119,7 +116,7 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
                   Submit
                 </Button>
               </div>
-            </form>
+            </Form>
           </>
         )}
       </Formik>
