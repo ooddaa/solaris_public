@@ -1,4 +1,4 @@
-import { Tooltip } from "@mantine/core";
+import { Tooltip, TextInput } from "@mantine/core";
 import { Field, getIn } from "formik";
 import styles from "../../../styles/AttributeContainer.module.scss";
 import isArray from "lodash/isArray";

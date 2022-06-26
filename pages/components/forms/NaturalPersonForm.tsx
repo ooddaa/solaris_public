@@ -9,6 +9,7 @@ import { sexEnum } from "../../schemas/enums";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { fieldFabric, FieldAttributeProps } from "./FieldFabric";
 import axios from "axios";
+import { Button } from '@mantine/core';
 
 interface NaturalPersonFormProps {
   addPerson: (data: string) => void;
@@ -111,9 +112,12 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
                 </fieldset>
               </div>
               <div className="buttons">
-                <button type="submit" className={styles.submitBtn}>
+                <Button 
+                  type="submit" 
+                  className={styles.submitBtn}
+                  >
                   Submit
-                </button>
+                </Button>
               </div>
             </form>
           </>

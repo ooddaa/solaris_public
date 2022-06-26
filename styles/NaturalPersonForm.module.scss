@@ -4,11 +4,11 @@
 .container {
   margin-top: 50px;
   // margin-left: 50px;
-  height: 500px;
+  // height: 500px;
   border-radius: 9px;
   border: 1px solid variables.$border-primary;
   // box-shadow: variables.$shadow-primary;
-  padding: 10px;
+  padding: 10px 10px 20px 10px;
   color: variables.$text-primary;
   background-color: variables.$white;
 
@@ -53,8 +53,8 @@
 }
 
 .submitBtn {
-  border: none;
-  padding: 10px 20px;
+  // border: none;
+  // padding: 10px 20px;
   margin-left: 30px;
 }
 

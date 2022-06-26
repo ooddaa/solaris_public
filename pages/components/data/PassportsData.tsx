@@ -3,6 +3,7 @@ import styles from "../../../styles/PassportsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
 import { AccordionElement } from "../AccordionElement";
+import { Button } from '@mantine/core';
 
 interface PassportsDataProps {
   onData: (data: string) => void;
@@ -61,7 +62,7 @@ function PassportsData(/* { onData }: PassportsDataProps */) {
 
   return (
     <div className={styles.container}>
-      <button onClick={getAllPassports}>Get all Passports</button>
+      <Button onClick={getAllPassports} className={styles.getAllButton} variant="gradient" gradient={{ from: '#ed6ea0', to: '#ec8c69', deg: 35 }}>Get all Passports</Button>
       <div className={`passports-data ${styles["passports-data"]} ${styles.container}`}>
         {passports && passports.length
           ? passports.map(thinkOfAGoodName)

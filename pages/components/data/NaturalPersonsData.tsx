@@ -3,14 +3,17 @@ import styles from "../../../styles/NaturalPersonsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
 import { AccordionElement } from "../AccordionElement";
-import type { EnhancedNode } from '../../types'
+import type { EnhancedNode } from "../../types";
+import { Button } from "@mantine/core";
 
 interface NaturalPersonsDataProps {
   onData?: (data: string) => void;
   onVerificationRequest: (data: any) => void;
 }
 
-function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) {
+function NaturalPersonsData({
+  onVerificationRequest,
+}: NaturalPersonsDataProps) {
   const [persons, setPersons] = useState<EnhancedNode[]>([]);
   const [verify, toggleVerify] = useState<boolean>(false);
 
@@ -49,7 +52,10 @@ function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) 
 
   const addNaturalPersonVerificationRequest = async (person: EnhancedNode) => {
     try {
-      const response = await axios.post("/api/addNaturalPersonVerificationRequest", person);
+      const response = await axios.post(
+        "/api/addNaturalPersonVerificationRequest",
+        person
+      );
       const result = response?.data;
       if (!result.success) {
         throw new Error(
@@ -61,8 +67,8 @@ function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) 
         );
       }
       const verificationRequests = result.data; // Relationship[]
-      console.log(verificationRequests)
-      onVerificationRequest(verificationRequests)
+      console.log(verificationRequests);
+      onVerificationRequest(verificationRequests);
       // onVerificationRequest({
       //   labels: "string[]",
       //   properties: {
@@ -73,25 +79,46 @@ function NaturalPersonsData({ onVerificationRequest }: NaturalPersonsDataProps) 
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
-      <button onClick={getAllNaturalPersons}>Get all Persons</button>
-      <div className={`persons-data ${styles["persons-data"]} ${styles.container}`}>
+      <Button
+        onClick={getAllNaturalPersons}
+        className={styles.getAllButton}
+        variant="gradient"
+        gradient={{ from: "orange", to: "red", deg: 90 }}
+      >
+        Get all Persons
+      </Button>
+      <div
+        className={`persons-data ${styles["persons-data"]} ${styles.container}`}
+      >
         {persons && persons.length
-          ? persons.map((person, i) => producePersonCard(person, i, verify, toggleVerify, addNaturalPersonVerificationRequest))
+          ? persons.map((person, i) =>
+              producePersonCard(
+                person,
+                i,
+                verify,
+                toggleVerify,
+                addNaturalPersonVerificationRequest
+              )
+            )
           : `persons found: ${persons.length}`}
       </div>
     </div>
   );
 }
 
-const PersonCard = () => {
+const PersonCard = () => {};
 
-}
-
-const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, toggleVerify: Function, addNaturalPersonVerificationRequest: Function): JSX.Element => {
+const producePersonCard = (
+  person: EnhancedNode,
+  i: number,
+  verify: boolean,
+  toggleVerify: Function,
+  addNaturalPersonVerificationRequest: Function
+): JSX.Element => {
   /* 
     FIRST_NAME: 'lol',  // required to complete Passport, but not unique identifier of a Passport in Neo4j
     LAST_NAME: 'aaaa',
@@ -110,9 +137,11 @@ const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, tog
             <tr>
               <td>First Name</td>
               <td>{properties.FIRST_NAME}</td>
-              {verify && <td>
-                <input type='checkbox'></input>
-              </td> }
+              {verify && (
+                <td>
+                  <input type="checkbox"></input>
+                </td>
+              )}
             </tr>
             <tr>
               <td>Last Name </td>
@@ -142,13 +171,18 @@ const producePersonCard = (person: EnhancedNode, i: number, verify: boolean, tog
         <button>copy</button>
         <button>edit</button>
 
-        <button onClick={() => {
-          console.log('verify', verify)
-          toggleVerify((v:boolean) => !v)
-        }
-        }>verify</button>
+        <button
+          onClick={() => {
+            console.log("verify", verify);
+            toggleVerify((v: boolean) => !v);
+          }}
+        >
+          verify
+        </button>
 
-        <button onClick={() => addNaturalPersonVerificationRequest(person)}>verify all</button>
+        <button onClick={() => addNaturalPersonVerificationRequest(person)}>
+          verify all
+        </button>
         <button className="delete--btn"> delete </button>
       </div>
     </div>
