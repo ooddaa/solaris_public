@@ -46,7 +46,8 @@ const RenderVerificationRequest = (
       <div>{JSON.stringify(startNode.properties, null, 5)}</div>
       <div>{JSON.stringify(endNode.properties, null, 5)}</div> */}
       <div className={styles["verification-request-card"]}>
-        <div className={styles["question"]}>
+        <div className="question">
+        {/* <div className={styles["question"]}> */}
           {endNode.properties.REQUESTER} wants to verify that{" "}
           {(startNode.properties.OWNER as string).slice(0, 6)}&rsquo;s{" "}
           {startNode.properties.KEY} is really{" "}
@@ -56,12 +57,12 @@ const RenderVerificationRequest = (
           Do you concur?
           <button onClick={yes}>Yes</button>
           <button onClick={no}>No</button>
-          {
-          (verificationEvent && verificationEvent.available) && 
-          ( verificationEvent.result ?
-              <div className={styles["verification-result-yes"]}>ok</div>
-             : (
-              <div className={styles["verification-result-no"]}>nope</div>
+          {verificationEvent &&
+            verificationEvent.available &&
+            (verificationEvent.result ? (
+              <div className="verification-result yes">ok</div>
+            ) : (
+              <div className="verification-result no">nope</div>
             ))}
         </div>
       </div>
@@ -77,7 +78,7 @@ const VerifyNaturalPersonForm = ({
       {verificationRequests && isArray(verificationRequests)
         ? verificationRequests.map(RenderVerificationRequest)
         : "no verification requests"}
-        <button>Submit</button>
+      <button>Submit</button>
     </div>
   );
 };

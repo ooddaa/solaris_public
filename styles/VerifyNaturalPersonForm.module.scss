@@ -7,38 +7,36 @@
   border: 1px solid blue;
   padding: 20px;
 
-  
-
-  button {
-    border: none;
+  [class~="question"] {
+    // background-color: red;
+    // color: red;
+    margin-bottom: 10px;
   }
+
 }
 
-.question {
-  // background-color: red;
-  // color: red;
-  margin-bottom: 10px;
-}
+
 
 .buttons {
   // border: 1px solid blue;
   display: flex;
   gap: 10px;
+
   button {
     padding: 4px 8px;
-
+    border: none;
   }
-}
 
-.verification-result-yes {
-  // width: 20px;
-  // height: 20px;
-  background-color: green;
-  padding: 4px 8px;
-}
-.verification-result-no {
-  // width: 20px;
-  // height: 20px;
-  background-color: red;
-  padding: 4px 8px;
+  [class~="verification-result"] {
+    padding: 4px 8px;
+  }
+  
+  [class~="yes"] {
+    background-color: green;
+  }
+  
+  [class~="no"] {
+    background-color: red;
+  }
+
 }
