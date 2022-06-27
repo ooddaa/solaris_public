@@ -1,6 +1,7 @@
 export type Node = {
   labels: string[];
   properties: {
+    _hash: string;
     [key: string]: string | boolean | (string[] | number[] | boolean[]);
   };
   identity: { low: number; high: number };

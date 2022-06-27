@@ -5,9 +5,11 @@ import isArray from "lodash/isArray";
 interface VerifyNaturalPersonFormProps {
   verificationRequests: Relationship[];
 }
-interface VerificationEventStateProps {
+interface VerificationEvent {
   available: boolean;
+  verfificationRequestHash: string | null,
   result: boolean | null;
+  reason?: string
 }
 
 const VerificationRequestsContext = createContext<any>(null)
@@ -15,22 +17,28 @@ const VerificationRequestsContext = createContext<any>(null)
 export default function VerifyNaturalPersonForm({
   verificationRequests,
 }: VerifyNaturalPersonFormProps) {
-  const [verifications, setVerifications] = useState<any[]>([])
+  const [verificationEventsMap, _thinkOfAGoodName] = useState(new Map<string, VerificationEvent>())
+  
+  const setVerificationEventsMap = (value: VerificationEvent) => {
+    const key = value.verfificationRequestHash
+    if (typeof key !== "string") return 
+    _thinkOfAGoodName(verificationEventsMap.set(key, value))
+  }
 
   const handleSubmit = () => {
-    console.log('submitting')
-    console.log(verifications)
+    // console.log('submitting')
+    console.log(verificationEventsMap)
   }
 
   return (
     <VerificationRequestsContext.Provider 
       value={{
-        verifications, 
-        setVerifications
+        verificationEventsMap, 
+        setVerificationEventsMap
       }}
     >
       {verificationRequests && isArray(verificationRequests)
-        ? verificationRequests.map((vr, i) => <RenderVerificationRequest key={i} verificationRequest={vr}/>)
+        ? verificationRequests.map((vr, i) => <VerificationRequest key={i} verificationRequest={vr}/>)
         : "no verification requests"}
       <button onClick={handleSubmit}>Submit</button>
     </VerificationRequestsContext.Provider>
@@ -39,38 +47,45 @@ export default function VerifyNaturalPersonForm({
 };
 
 
-function RenderVerificationRequest({verificationRequest} : {verificationRequest: Relationship}
+function VerificationRequest({verificationRequest} : {verificationRequest: Relationship}
 ): JSX.Element {
   const { labels, properties, startNode, endNode } = verificationRequest;
   const [verificationEvent, setVerificationEvent] =
-    useState<VerificationEventStateProps>({
+    useState<VerificationEvent>({
       available: false,
+      verfificationRequestHash: null,
       result: null,
     });
-  const { verifications, setVerifications } = useContext(VerificationRequestsContext)
+  const { setVerificationEventsMap } = useContext(VerificationRequestsContext)
 
-  const yes = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const yes = (hash: string) => {
     const ve = {
       ...verificationEvent,
       available: true,
+      verfificationRequestHash: hash,
       result: true,
     }
     setVerificationEvent(ve);
     /**@todo include endNode's _hash */
     console.log('yes', ve)
-    setVerifications((arr: any) => [...arr, ve])
+    setVerificationEventsMap(ve)
   };
 
-  const no = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const no = (hash: string) => {
     const ve = {
       ...verificationEvent,
       available: true,
+      verfificationRequestHash: hash,
       result: false,
     }
     setVerificationEvent(ve);
     console.log('no', ve)
-    setVerifications((arr: any) => [...arr, ve])
+    setVerificationEventsMap(ve)
   };
+
+  const addReason = (e: React.ChangeEventHandler<HTMLInputElement>) => {
+
+  }
 
   return (
     <div /* key={i}  */className="verification-request">
@@ -83,14 +98,16 @@ function RenderVerificationRequest({verificationRequest} : {verificationRequest:
         </div>
         <div className={styles["buttons"]}>
           Do you concur?
-          <button onClick={yes}>Yes</button>
-          <button onClick={no}>No</button>
+          <button onClick={() => yes(endNode.properties._hash)}>Yes</button>
+          <button onClick={() => no(endNode.properties._hash)}>No</button>
           {verificationEvent &&
             verificationEvent.available &&
             (verificationEvent.result ? (
               <div className="verification-result yes">ok</div>
             ) : (
-              <div className="verification-result no">nope</div>
+              <div className="verification-result no">why?
+                {/* <input type='text' name="verification-result-reason" onChange={addReason}/> */}
+              </div>
             ))}
         </div>
       </div>
@@ -101,11 +118,11 @@ function RenderVerificationRequest({verificationRequest} : {verificationRequest:
 
 // const updateVerifications = useCallback((newVerificationEvent: any) => {
   //   const rv = [...verifications, newVerificationEvent]
-  //   setVerifications(rv)
+  //   setVerificationEvents(rv)
   //   console.log('updateVerifications:', rv)
   // }, [])
   // const contextValue = useMemo(() => {
-  //   // setVerifications()
+  //   // setVerificationEvents()
   // }, [])
 
 /* verificationRequest is 
