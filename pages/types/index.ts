@@ -39,3 +39,22 @@ export type Result = {
   parameters?: Object,
   data: (EnhancedNode|any)[],
 }
+
+/** I don't want to be passing Relationship[] around, do I? */
+export interface VerificationRequest {
+  // who requested 
+  // what is being requested
+  // all ids of 
+  // OWNER of the Attribute, 
+  // Attribute
+  // REQUESTER
+}
+
+export interface VerificationEvent {
+  available: boolean;
+  verificationRequestHash: string | null;
+  verificationRequest?: Relationship; // well this should be VerificationRequest
+  result: boolean | null;
+  reason?: string;
+  verifierCredentials: string; // lets sound smart, shall we. This needs to be a (User { _hash }), but for now it would be just a string mapped to (User { USER_ID: verifierCredentials }) of who actually provides the VerificationEvent. Not sure why I'm fucking up the names, but it's late and I'm tired.
+}

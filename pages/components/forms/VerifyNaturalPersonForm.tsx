@@ -1,94 +1,106 @@
-import React, { createContext, useContext, useState, useMemo, useCallback } from "react";
-import { Relationship } from "../../types";
+import React, {
+  createContext,
+  useContext,
+  useState,
+} from "react";
+import { Relationship, VerificationEvent } from "../../types";
 import styles from "../../../styles/VerifyNaturalPersonForm.module.scss";
 import isArray from "lodash/isArray";
+import axios from 'axios'
 interface VerifyNaturalPersonFormProps {
   verificationRequests: Relationship[];
 }
-interface VerificationEvent {
-  available: boolean;
-  verfificationRequestHash: string | null,
-  result: boolean | null;
-  reason?: string
-}
 
-const VerificationRequestsContext = createContext<any>(null)
+const VerificationRequestsContext = createContext<any>(null);
 
 export default function VerifyNaturalPersonForm({
   verificationRequests,
 }: VerifyNaturalPersonFormProps) {
-  const [verificationEventsMap, _thinkOfAGoodName] = useState(new Map<string, VerificationEvent>())
-  
-  const setVerificationEventsMap = (value: VerificationEvent) => {
-    const key = value.verfificationRequestHash
-    if (typeof key !== "string") return 
-    _thinkOfAGoodName(verificationEventsMap.set(key, value))
-  }
+  const [verificationEventsMap, _thinkOfAGoodName] = useState(
+    new Map<string, VerificationEvent>()
+  );
 
-  const handleSubmit = () => {
-    // console.log('submitting')
-    console.log(verificationEventsMap)
-  }
+  const setVerificationEventsMap = (value: VerificationEvent) => {
+    const key = value.verfificationRequestHash;
+    if (typeof key !== "string") return;
+    _thinkOfAGoodName(verificationEventsMap.set(key, value));
+  };
+
+  const handleSubmit = async () => {
+
+    try {
+      const response: VerificationEvent[] = Array.from(verificationEventsMap.values())
+      // console.log(response)
+      const data = await axios.post("/api/addVerificationEvent", response);
+
+      console.log('response: ', data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <VerificationRequestsContext.Provider 
+    <VerificationRequestsContext.Provider
       value={{
-        verificationEventsMap, 
-        setVerificationEventsMap
+        verificationEventsMap,
+        setVerificationEventsMap,
       }}
     >
       {verificationRequests && isArray(verificationRequests)
-        ? verificationRequests.map((vr, i) => <VerificationRequest key={i} verificationRequest={vr}/>)
+        ? verificationRequests.map((vr, i) => (
+            <VerificationRequest key={i} verificationRequest={vr} />
+          ))
         : "no verification requests"}
       <button onClick={handleSubmit}>Submit</button>
     </VerificationRequestsContext.Provider>
   );
+}
 
-};
-
-
-function VerificationRequest({verificationRequest} : {verificationRequest: Relationship}
-): JSX.Element {
+function VerificationRequest({
+  verificationRequest,
+}: {
+  verificationRequest: Relationship;
+}): JSX.Element {
   const { labels, properties, startNode, endNode } = verificationRequest;
-  const [verificationEvent, setVerificationEvent] =
-    useState<VerificationEvent>({
+  const [verificationEvent, setVerificationEvent] = useState<VerificationEvent>(
+    {
+      verfificationRequestHash: endNode.properties._hash,
       available: false,
-      verfificationRequestHash: null,
       result: null,
-    });
-  const { setVerificationEventsMap } = useContext(VerificationRequestsContext)
+      verifierCredentials: 'oda', // always me +)
+    }
+  );
+  const { setVerificationEventsMap } = useContext(VerificationRequestsContext);
 
-  const yes = (hash: string) => {
+  const yes = () => {
     const ve = {
       ...verificationEvent,
       available: true,
-      verfificationRequestHash: hash,
       result: true,
-    }
+      verificationRequest,
+    };
+
     setVerificationEvent(ve);
-    /**@todo include endNode's _hash */
-    console.log('yes', ve)
-    setVerificationEventsMap(ve)
+    console.log("yes", ve);
+    setVerificationEventsMap(ve);
   };
 
-  const no = (hash: string) => {
+  const no = () => {
     const ve = {
       ...verificationEvent,
       available: true,
-      verfificationRequestHash: hash,
       result: false,
-    }
+      verificationRequest,
+    };
     setVerificationEvent(ve);
-    console.log('no', ve)
-    setVerificationEventsMap(ve)
+    console.log("no", ve);
+    setVerificationEventsMap(ve);
   };
 
-  const addReason = (e: React.ChangeEventHandler<HTMLInputElement>) => {
-
-  }
+  const addReason = (e: React.ChangeEventHandler<HTMLInputElement>) => {};
 
   return (
-    <div /* key={i}  */className="verification-request">
+    <div className="verification-request">
       <div className={styles["verification-request-card"]}>
         <div className="question">
           {endNode.properties.REQUESTER} wants to verify that{" "}
@@ -98,14 +110,15 @@ function VerificationRequest({verificationRequest} : {verificationRequest: Relat
         </div>
         <div className={styles["buttons"]}>
           Do you concur?
-          <button onClick={() => yes(endNode.properties._hash)}>Yes</button>
-          <button onClick={() => no(endNode.properties._hash)}>No</button>
+          <button onClick={yes}>Yes</button>
+          <button onClick={no}>No</button>
           {verificationEvent &&
             verificationEvent.available &&
             (verificationEvent.result ? (
               <div className="verification-result yes">ok</div>
             ) : (
-              <div className="verification-result no">why?
+              <div className="verification-result no">
+                why?
                 {/* <input type='text' name="verification-result-reason" onChange={addReason}/> */}
               </div>
             ))}
@@ -113,17 +126,16 @@ function VerificationRequest({verificationRequest} : {verificationRequest: Relat
       </div>
     </div>
   );
-};
-
+}
 
 // const updateVerifications = useCallback((newVerificationEvent: any) => {
-  //   const rv = [...verifications, newVerificationEvent]
-  //   setVerificationEvents(rv)
-  //   console.log('updateVerifications:', rv)
-  // }, [])
-  // const contextValue = useMemo(() => {
-  //   // setVerificationEvents()
-  // }, [])
+//   const rv = [...verifications, newVerificationEvent]
+//   setVerificationEvents(rv)
+//   console.log('updateVerifications:', rv)
+// }, [])
+// const contextValue = useMemo(() => {
+//   // setVerificationEvents()
+// }, [])
 
 /* verificationRequest is 
   Relationship {

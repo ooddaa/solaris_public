@@ -68,14 +68,12 @@ function NaturalPersonsData({
       }
       const verificationRequests = result.data; // Relationship[]
       console.log(verificationRequests);
+
+      /**
+       * @todo Transform into a VerificationRequest[] before sending
+       */
       onVerificationRequest(verificationRequests);
-      // onVerificationRequest({
-      //   labels: "string[]",
-      //   properties: {
-      //     "key": "value",
-      //   },
-      //   identity: { low: 1, high: 0 },
-      // })
+
     } catch (error) {
       console.error(error);
     }

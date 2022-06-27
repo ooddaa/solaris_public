@@ -1,9 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { log, getRequiredProperties, Builder } from "mango";
+import { log, Builder } from "mango";
 import { mango, engine }  from '../db/neoj4Config'
-import { EnhancedNode, SimplifiedNode, SimplifiedRelationship, Result } from '../types'
+import { EnhancedNode, Result } from '../types'
 
 const builder = new Builder()
 /**

@@ -9,7 +9,7 @@ import { EnhancedNode, Relationship } from '../types'
 interface DataEntryWindowProps {
   addPassport: (data: string) => void;
   addNaturalPerson: (data: string) => void;
-  verificationRequests: Relationship[];
+  verificationRequests: Relationship[]; // should be VerificationRequest[]
   // verifyNaturalPerson: (data: string) => void;
 }
 
