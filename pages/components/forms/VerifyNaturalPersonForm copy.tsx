@@ -5,101 +5,23 @@ import isArray from "lodash/isArray";
 interface VerifyNaturalPersonFormProps {
   verificationRequests: Relationship[];
 }
+
 interface VerificationEventStateProps {
   available: boolean;
   result: boolean | null;
 }
+const VerificationRequests = createContext<any>(null)
 
-const VerificationRequestsContext = createContext<any>(null)
 
-export default function VerifyNaturalPersonForm({
+
+
+
+function VerifyNaturalPersonForm({
   verificationRequests,
 }: VerifyNaturalPersonFormProps) {
   const [verifications, setVerifications] = useState<any[]>([])
 
-  const handleSubmit = () => {
-    console.log('submitting')
-    console.log(verifications)
-  }
-
-  return (
-    <VerificationRequestsContext.Provider 
-      value={{
-        verifications, 
-        setVerifications
-      }}
-    >
-      {verificationRequests && isArray(verificationRequests)
-        ? verificationRequests.map((vr, i) => <RenderVerificationRequest key={i} verificationRequest={vr}/>)
-        : "no verification requests"}
-      <button onClick={handleSubmit}>Submit</button>
-    </VerificationRequestsContext.Provider>
-  );
-
-};
-
-
-function RenderVerificationRequest({verificationRequest} : {verificationRequest: Relationship}
-): JSX.Element {
-  const { labels, properties, startNode, endNode } = verificationRequest;
-  const [verificationEvent, setVerificationEvent] =
-    useState<VerificationEventStateProps>({
-      available: false,
-      result: null,
-    });
-  const { verifications, setVerifications } = useContext(VerificationRequestsContext)
-
-  const yes = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const ve = {
-      ...verificationEvent,
-      available: true,
-      result: true,
-    }
-    setVerificationEvent(ve);
-    /**@todo include endNode's _hash */
-    console.log('yes', ve)
-    setVerifications((arr: any) => [...arr, ve])
-  };
-
-  const no = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const ve = {
-      ...verificationEvent,
-      available: true,
-      result: false,
-    }
-    setVerificationEvent(ve);
-    console.log('no', ve)
-    setVerifications((arr: any) => [...arr, ve])
-  };
-
-  return (
-    <div /* key={i}  */className="verification-request">
-      <div className={styles["verification-request-card"]}>
-        <div className="question">
-          {endNode.properties.REQUESTER} wants to verify that{" "}
-          {(startNode.properties.OWNER as string).slice(0, 6)}&rsquo;s{" "}
-          {startNode.properties.KEY} is really{" "}
-          <i>{startNode.properties.VALUE}</i>.
-        </div>
-        <div className={styles["buttons"]}>
-          Do you concur?
-          <button onClick={yes}>Yes</button>
-          <button onClick={no}>No</button>
-          {verificationEvent &&
-            verificationEvent.available &&
-            (verificationEvent.result ? (
-              <div className="verification-result yes">ok</div>
-            ) : (
-              <div className="verification-result no">nope</div>
-            ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
-// const updateVerifications = useCallback((newVerificationEvent: any) => {
+  // const updateVerifications = useCallback((newVerificationEvent: any) => {
   //   const rv = [...verifications, newVerificationEvent]
   //   setVerifications(rv)
   //   console.log('updateVerifications:', rv)
@@ -107,6 +29,82 @@ function RenderVerificationRequest({verificationRequest} : {verificationRequest:
   // const contextValue = useMemo(() => {
   //   // setVerifications()
   // }, [])
+
+  const handleSubmit = () => {
+    console.log('submitting')
+    console.log(verifications)
+  }
+
+  return (
+    <VerificationRequests.Provider value={{verifications, setVerifications}}>
+      {verificationRequests && isArray(verificationRequests)
+        ? verificationRequests.map(RenderVerificationRequest)
+        : "no verification requests"}
+      <button onClick={handleSubmit}>Submit</button>
+    </VerificationRequests.Provider>
+  );
+
+  ////////////// FUN /////////////
+  function RenderVerificationRequest (
+    verificationRequest: Relationship,
+    i: number
+  ): JSX.Element {
+    const { labels, properties, startNode, endNode } = verificationRequest;
+    const [verificationEvent, setVerificationEvent] =
+      useState<VerificationEventStateProps>({
+        available: false,
+        result: null,
+      });
+    const { verifications, setVerifications } = useContext(VerificationRequests)
+  
+    const yes = (e: React.MouseEvent<HTMLButtonElement>) => {
+      const ve = {
+        ...verificationEvent,
+        available: true,
+        result: true,
+      }
+      setVerificationEvent(ve);
+      setVerifications((arr: any) => [...arr, ve])
+    };
+  
+    const no = (e: React.MouseEvent<HTMLButtonElement>) => {
+      const ve = {
+        ...verificationEvent,
+        available: true,
+        result: false,
+      }
+      setVerificationEvent(ve);
+      setVerifications((arr: any) => [...arr, ve])
+    };
+  
+    return (
+      <div key={i} className="verification-request">
+        <div className={styles["verification-request-card"]}>
+          <div className="question">
+            {endNode.properties.REQUESTER} wants to verify that{" "}
+            {(startNode.properties.OWNER as string).slice(0, 6)}&rsquo;s{" "}
+            {startNode.properties.KEY} is really{" "}
+            <i>{startNode.properties.VALUE}</i>.
+          </div>
+          <div className={styles["buttons"]}>
+            Do you concur?
+            <button onClick={yes}>Yes</button>
+            <button onClick={no}>No</button>
+            {verificationEvent &&
+              verificationEvent.available &&
+              (verificationEvent.result ? (
+                <div className="verification-result yes">ok</div>
+              ) : (
+                <div className="verification-result eno">nope</div>
+              ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+};
+
+export default VerifyNaturalPersonForm;
 
 /* verificationRequest is 
   Relationship {
