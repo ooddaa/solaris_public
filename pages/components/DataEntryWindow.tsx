@@ -5,11 +5,11 @@ import { Tabs } from "@mantine/core";
 import PassportForm from "./forms/PassportForm";
 import NaturalPersonForm from "./forms/NaturalPersonForm";
 import VerifyNaturalPersonForm from "./forms/VerifyNaturalPersonForm";
-import { EnhancedNode } from '../types'
+import { EnhancedNode, Relationship } from '../types'
 interface DataEntryWindowProps {
   addPassport: (data: string) => void;
   addNaturalPerson: (data: string) => void;
-  verificationRequests: EnhancedNode[];
+  verificationRequests: Relationship[];
   // verifyNaturalPerson: (data: string) => void;
 }
 

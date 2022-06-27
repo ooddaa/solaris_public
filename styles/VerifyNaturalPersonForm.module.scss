@@ -1,0 +1,31 @@
+@use "variables.module.scss";
+
+.verification-request-card {
+  display: inline-block;
+  // height: 100px;
+  width: 400px;
+  border: 1px solid blue;
+  padding: 20px;
+
+  
+
+  button {
+    border: none;
+  }
+}
+
+.question {
+  // background-color: red;
+  // color: red;
+  margin-bottom: 10px;
+}
+
+.buttons {
+  // border: 1px solid blue;
+  display: flex;
+  gap: 10px;
+  button {
+    padding: 4px 8px;
+
+  }
+}

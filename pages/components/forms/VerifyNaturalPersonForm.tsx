@@ -1,5 +1,6 @@
 import React from 'react'
 import { Relationship } from '../../types'
+import styles from "../../../styles/VerifyNaturalPersonForm.module.scss"
 import isArray from 'lodash/isArray'
 interface VerifyNaturalPersonFormProps {
   verificationRequests: Relationship[];
@@ -61,10 +62,21 @@ const renderVerificationRequest = (verificationRequest: Relationship, i: number)
   return (
     <div key={i} className="verification-request">
       {/* { properties.} */}
-      {JSON.stringify(properties, null, 5)}
-      <div>{JSON.stringify(properties, null, 5)}</div>
+      {/* {JSON.stringify(properties, null, 5)} */}
+      {/* <div>{JSON.stringify(properties, null, 5)}</div>
       <div>{JSON.stringify(startNode.properties, null, 5)}</div>
-      <div>{JSON.stringify(endNode.properties, null, 5)}</div>
+      <div>{JSON.stringify(endNode.properties, null, 5)}</div> */}
+      <div className={styles["verification-request-card"]}>
+        <div className={styles["question"]}>
+          {endNode.properties.REQUESTER} wants to verify that {(startNode.properties.OWNER as string).slice(0,6)}&rsquo;s {startNode.properties.KEY} is really <i>{startNode.properties.VALUE}</i>.
+        </div>
+        <div className={styles["buttons"]}>
+        Do you concur?
+      <button>Yes</button>
+      <button>No</button>
+
+        </div>
+      </div>
     </div>
   )
 }
