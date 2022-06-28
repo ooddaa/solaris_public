@@ -3,7 +3,7 @@ import { useState } from 'react'
 import DataDisplayWindow from "./components/DataDisplayWindow"
 import DataEntryWindow from "./components/DataEntryWindow"
 import styles from '../styles/Home.module.scss'
-import { EnhancedNode } from './types'
+import { Relationship } from './types'
 
 const Home: NextPage = () => {
   const [passports, setPassports] = useState<string[]>([])
@@ -18,9 +18,9 @@ const Home: NextPage = () => {
     setPersons([...persons, newPerson])
   }
 
-  const [verificationRequests, setVerificationRequests] = useState<EnhancedNode[]>([])
+  const [verificationRequests, setVerificationRequests] = useState<Relationship[]>([])
 
-  const onVerificationRequest = (requests: EnhancedNode[]) => {
+  const onVerificationRequest = (requests: Relationship[]) => {
     setVerificationRequests(requests)
   }
 

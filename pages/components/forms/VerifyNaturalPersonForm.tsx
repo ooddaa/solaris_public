@@ -21,7 +21,7 @@ export default function VerifyNaturalPersonForm({
   );
 
   const setVerificationEventsMap = (value: VerificationEvent) => {
-    const key = value.verfificationRequestHash;
+    const key = value.verificationRequestHash;
     if (typeof key !== "string") return;
     _thinkOfAGoodName(verificationEventsMap.set(key, value));
   };
@@ -64,7 +64,7 @@ function VerificationRequest({
   const { labels, properties, startNode, endNode } = verificationRequest;
   const [verificationEvent, setVerificationEvent] = useState<VerificationEvent>(
     {
-      verfificationRequestHash: endNode.properties._hash,
+      verificationRequestHash: endNode.properties._hash,
       available: false,
       result: null,
       verifierCredentials: 'oda', // always me +)

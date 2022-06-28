@@ -1,10 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { log } from "mango";
+import { log, Builder } from "mango";
 import { mango, engine }  from '../db/neoj4Config'
 import { EnhancedNode, Relationship, Result, VerificationEvent } from '../types'
 
+const builder = new Builder()
 /**
  * VerificationEvent
  *
@@ -51,6 +52,10 @@ export default async function handler(
             throw new Error(`api/addVerificationEvent: expected to receive (VerificationRequest) as verificationEvent.verificationRequest.endNode.\nverificationEvent: ${JSON.stringify(verificationEvent, null, 4)}`)
           }
 
+          if (!(verificationEvent?.verificationRequestHash)) {
+            throw new Error(`api/addVerificationEvent: expected to receive verificationEvent.verificationRequestHash.\nverificationEvent: ${JSON.stringify(verificationEvent, null, 4)}`)
+          }
+
           // const ve = await engine.matchNodes([verificationEvent?.verificationRequest?.endNode],{
           //   extract: true,
           // })
@@ -58,7 +63,45 @@ export default async function handler(
           // const { ATTRIBUTE_HASH, REQUESTER, VERIFIER, _hash } = verificationEvent?.verificationRequest?.endNode.properties
           // const ve = await mango.findNode(['VerificationRequest'], { ATTRIBUTE_HASH, REQUESTER, VERIFIER, _hash })
           // console.log(ve)
-          log('endNode', verificationEvent?.verificationRequest?.endNode)
+
+          /* {
+  VERIFIER: 'any',
+  _hash: '9a39aedc2e7fb8168a8706f7ca5f0c37391938f1579e6b8c579809366560e0a6',
+  _template: 'Node',
+  _date_created: [ 2022, 6, 28, 2, 1656422443845 ],
+  TIMELIMIT: false,
+  ATTRIBUTE_HASH: '15f5a8ea06fb70ece116fb600f557d33c1a0083fd1101d203864459b3709d60b',
+  REQUESTER: 'Ronald MacDonald',
+  otherConditions: [ 'cereal killers not to bother' ],
+  _uuid: '7067554b-acc9-4e6b-a7ba-c0855ee84ccd',
+  _label: 'VerificationRequest',
+  _labels: [ 'VerificationRequest' ]
+} */
+
+          const { ATTRIBUTE_HASH, REQUESTER, VERIFIER, TIMELIMIT, otherConditions, _hash, _uuid, _label, _labels, _date_created, _template } = verificationEvent?.verificationRequest?.endNode.properties
+          // log(verificationEvent?.verificationRequest?.endNode.properties)
+
+          /**@todo why this creates VerificationRequest duplicates ??? */
+          // const partnerNode = builder.makeNode(["VerificationRequest"], verificationEvent?.verificationRequest?.endNode.properties)
+          // const partnerNode = builder.makeNode(["VerificationRequest"], { ...verificationEvent?.verificationRequest?.endNode.properties })
+          
+          /** whilst this works fine */
+          const partnerNode = builder.makeNode(["VerificationRequest"], {
+            ATTRIBUTE_HASH,
+            REQUESTER,
+            VERIFIER,
+            TIMELIMIT,
+            otherConditions,
+            _hash,
+            _uuid,
+            _label, 
+            _labels, 
+            _date_created,
+            _template,
+          })
+
+
+          // log('endNode', verificationEvent?.verificationRequest?.endNode)
           const rv = await mango.buildAndMergeEnhancedNode({
             labels: ["VerificationEvent"],
             properties: { 
@@ -71,13 +114,13 @@ export default async function handler(
                 labels: ["IN_RESPONSE_TO"],
                 /** @todo anything useful as rel props? */
                 // properties: {}, 
-                partnerNode: verificationEvent?.verificationRequest?.endNode,
-                // partnerNode: ve,
+                // partnerNode: verificationEvent?.verificationRequest?.endNode,
+                partnerNode: partnerNode,
                 // direction: "outbound",
               }
             ]
           })
-          console.log(rv)
+          // log('rv', rv)
           return rv
         }
       )

@@ -4,11 +4,11 @@ import { Prism } from "@mantine/prism";
 import { Tabs } from "@mantine/core";
 import PassportsData from './data/PassportsData'
 import NaturalPersonsData from './data/NaturalPersonsData'
-import type { EnhancedNode } from '../types'
+import type { Relationship } from '../types'
 
 interface DataDisplayWindowProps {
   data: string[];
-  onVerificationRequest: (data: EnhancedNode[]) => void;
+  onVerificationRequest: (data: Relationship[]) => void;
 }
 const DataDisplayWindow = ({ data, onVerificationRequest }: DataDisplayWindowProps) => {
 
