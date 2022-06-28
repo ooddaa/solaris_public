@@ -1,6 +1,7 @@
 import { Tooltip, TextInput, Text, Select } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { FormikProps, getIn } from "formik";
+import { isArray } from "lodash";
 import styles from "../../../styles/AttributeContainer.module.scss";
 
 export interface FieldAttributeProps {
@@ -40,11 +41,14 @@ export function fieldFabric(
   // }
   const makeTextInput = MyTextInput(formik);
   const makeDateInput = MyDateInput(formik);
+  const makeSelectInput = MySelectInput(formik);
   return attributes.map(({ type, ...attr }) => {
     if (type === "text") {
       return makeTextInput({ type, ...attr });
     } else if (type === "date") {
       return makeDateInput({ type, ...attr });
+    } else if (type === "select") {
+      return makeSelectInput({ type, ...attr });
     }
   });
 }
@@ -52,7 +56,9 @@ export function fieldFabric(
 function MyTextInput(formik: FormikProps<any>): Function {
   return function inner({ label, name, id, type }: TextFieldAttributeProps) {
     if (!["text", "textarea"].includes(type)) {
-      throw new Error(`MyTextInput: unsupported type ${type}. Must be text | textarea.`);
+      throw new Error(
+        `MyTextInput: unsupported type ${type}. Must be text | textarea.`
+      );
     }
 
     return (
@@ -117,67 +123,78 @@ function MyDateInput(formik: FormikProps<any>): Function {
             )
           }
         >
-          <DatePicker
+          <input
+            className={styles["date-input"]}
+            type="date"
+            {...formik.getFieldProps(name)}
+          />
+          {/* <DatePicker
             className={styles["date-input"]}
             type='date'
             {...formik.getFieldProps(name)}
-          />
+          /> */}
         </Tooltip>
       </div>
     );
   };
 }
 
-// function MySelectInput(formik: FormikProps<any>): Function {}
+function MySelectInput(formik: FormikProps<any>): Function {
+  return function inner({
+    label,
+    name,
+    id,
+    type,
+    options,
+  }: SelectFieldAttributeProps) {
+    if (!["select"].includes(type)) {
+      throw new Error(
+        `MySelectInput: unsupported type ${type}. Must be select.`
+      );
+    }
 
-// function MyDateInput({ label, name, id, type }: DateFieldAttributeProps) {
-//   if (!["text", "date", "select", "textarea"].includes(type)) {
-//     throw new Error(`Unsupported type: ${type}. Must be text | date.`);
-//   }
-
-//   return (
-//     <div key={id || name} className={styles["attribute-input-container"]}>
-//       <label htmlFor={id || name}><Text color="dimmed" className={styles["label"]} size='sm'>{label}: </Text></label>
-//       <Tooltip
-//         position="right"
-//         placement="center"
-//         gutter={10}
-//         color="red"
-//         withArrow
-//         transitionDuration={10}
-//         label={formik.errors && getIn(formik.errors, name)}
-//         opened={
-//           !!(getIn(formik.touched, name) && formik.errors && getIn(formik.errors, name))
-//         }
-//       >
-//         { element }
-//       </Tooltip>
-//     </div>
-//   );
-// }
-
-// function MySelectInput({ label, name, id, type }: SelectFieldAttributeProps) {
-//   if (!["text", "date", "select", "textarea"].includes(type)) {
-//     throw new Error(`Unsupported type: ${type}. Must be text | date.`);
-//   }
-
-//   return (
-//     <div key={id || name} className={styles["attribute-input-container"]}>
-//       <label htmlFor={id || name}><Text color="dimmed" className={styles["label"]} size='sm'>{label}: </Text></label>
-//       <Tooltip
-//         position="right"
-//         placement="center"
-//         gutter={10}
-//         color="red"
-//         withArrow
-//         transitionDuration={10}
-//         label={formik.errors && getIn(formik.errors, name)}
-//         opened={
-//           !!(getIn(formik.touched, name) && formik.errors && getIn(formik.errors, name))
-//         }
-//       >
-//         { element }
-//       </Tooltip>
-//     </div>
-//   );
-// }
+    return (
+      <div key={id || name} className={styles["attribute-input-container"]}>
+        <label htmlFor={id || name}>
+          <Text color="dimmed" className={styles["label"]} size="sm">
+            {label}:{" "}
+          </Text>
+        </label>
+        <Tooltip
+          position="right"
+          placement="center"
+          gutter={10}
+          color="red"
+          withArrow
+          transitionDuration={10}
+          label={formik.errors && getIn(formik.errors, name)}
+          opened={
+            !!(
+              getIn(formik.touched, name) &&
+              formik.errors &&
+              getIn(formik.errors, name)
+            )
+          }
+        >
+          <select
+            className={styles["select-input"]}
+            {...formik.getFieldProps(name)}
+          >
+            {options && isArray(options) && options.map((option: string) => {
+              return <option key={option}>{option}</option>
+            })}
+          </select>
+          {/* {options && isArray(options) && (
+            <Select
+              className={styles["select-input"]}
+              {...formik.getFieldProps(name)}
+              data={options.map((option: string) => {
+                return { value: option, label: option };
+              })}
+            />
+          )} */}
+        </Tooltip>
+      </div>
+    );
+  };
+}
