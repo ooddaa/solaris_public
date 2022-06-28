@@ -988,33 +988,38 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@mantine/core@^4.2.10", "@mantine/core@4.2.10":
-  "integrity" "sha512-UCPhDcumygfBvik64VkMnBvqy0ZN9q+1AQ0fPdK8aAUvjRBWSyH0dJPL55vsK1ODboKktSEsyjHtb09DroL7fA=="
-  "resolved" "https://registry.npmjs.org/@mantine/core/-/core-4.2.10.tgz"
-  "version" "4.2.10"
+"@mantine/core@^4.2.11", "@mantine/core@4.2.11":
+  "integrity" "sha512-4nLZLIbtiu1uVEqfdxqkEr/gLbI/RC4+8C2j3d9zFs+vPbIuKi2R/LSbwXfFePEPSfb90RqLlXiVZY2z17jwFA=="
+  "resolved" "https://registry.npmjs.org/@mantine/core/-/core-4.2.11.tgz"
+  "version" "4.2.11"
   dependencies:
-    "@mantine/styles" "4.2.10"
+    "@mantine/styles" "4.2.11"
     "@popperjs/core" "^2.9.3"
     "@radix-ui/react-scroll-area" "^0.1.1"
     "react-popper" "^2.2.5"
     "react-textarea-autosize" "^8.3.2"
 
-"@mantine/hooks@^4.2.10", "@mantine/hooks@4.2.10":
-  "integrity" "sha512-gVYWeE4Ieu6FBwh9h/3FjcrrNzKx1k6Yw07/LSngJP0uT3fLt1gvY2p4PtPpOh7z2/RpTXBR1x+dOgEUKomYUQ=="
-  "resolved" "https://registry.npmjs.org/@mantine/hooks/-/hooks-4.2.10.tgz"
-  "version" "4.2.10"
+"@mantine/dates@^4.2.11":
+  "integrity" "sha512-+mYFVoggL84xGd2i1daHjoKBWau5c1g+N7Ny28rduGiqDkBieSeBtx/jOnG5HfzXfICyz5OrDMhxDhF681WWDA=="
+  "resolved" "https://registry.npmjs.org/@mantine/dates/-/dates-4.2.11.tgz"
+  "version" "4.2.11"
 
-"@mantine/prism@^4.2.10":
-  "integrity" "sha512-W0WZmY2A+tMvvR+2tCY+l2bwlqSacz99s3LivvIcy6v5qQCqbI2nwzpndCIt9kqCYEabo3KfYBi/uhQIwXjvCQ=="
-  "resolved" "https://registry.npmjs.org/@mantine/prism/-/prism-4.2.10.tgz"
-  "version" "4.2.10"
+"@mantine/hooks@^4.2.11", "@mantine/hooks@4.2.11":
+  "integrity" "sha512-kwbMbpT8ErroVSLK7fxEN0SypvK0rEErYyHKfKSMah5buWSu2F/diIuafL5UjvN7aQfS0ZJnqnH/avUN25H3qg=="
+  "resolved" "https://registry.npmjs.org/@mantine/hooks/-/hooks-4.2.11.tgz"
+  "version" "4.2.11"
+
+"@mantine/prism@^4.2.11":
+  "integrity" "sha512-DqmA1iExm/8qRUugKBlLjZiP8vItw4aH5E2ecLrXpPV0s62QaZCp95WqFEDFg53/HHWcSv7kSF1q07f/VtiXog=="
+  "resolved" "https://registry.npmjs.org/@mantine/prism/-/prism-4.2.11.tgz"
+  "version" "4.2.11"
   dependencies:
     "prism-react-renderer" "^1.2.1"
 
-"@mantine/styles@4.2.10":
-  "integrity" "sha512-dWwCzBLYE8CwPJSPlV3MyIuR4ET3u6O+T+VmxY0lab6w/bqflseNSh9UBIW2AUoIYtxPVDjbZfzeTw32aV8CxA=="
-  "resolved" "https://registry.npmjs.org/@mantine/styles/-/styles-4.2.10.tgz"
-  "version" "4.2.10"
+"@mantine/styles@4.2.11":
+  "integrity" "sha512-K0Ih0TUkGOJoVZRpFg3FfXWcYTXWKsC4O43VC5sPRnejQ1bQ6WiYP8DPeYSlPyXAjPyEu2gKqZ72IIRQG9QOJA=="
+  "resolved" "https://registry.npmjs.org/@mantine/styles/-/styles-4.2.11.tgz"
+  "version" "4.2.11"
   dependencies:
     "@emotion/cache" "11.7.1"
     "@emotion/react" "11.7.1"
@@ -2986,6 +2991,11 @@
   "integrity" "sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q=="
   "resolved" "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz"
   "version" "3.0.3"
+
+"dayjs@^1.10.5", "dayjs@^1.11.3":
+  "integrity" "sha512-xxwlswWOlGhzgQ4TKzASQkUhqERI3egRNqgV4ScR8wlANA/A9tZ7miXa44vTTKEq5l7vWoL5G57bG3zA+Kow0A=="
+  "resolved" "https://registry.npmjs.org/dayjs/-/dayjs-1.11.3.tgz"
+  "version" "1.11.3"
 
 "de-indent@^1.0.2":
   "integrity" "sha1-sgOOhG3DO6pXlhKNCAS0VbjB4h0="
