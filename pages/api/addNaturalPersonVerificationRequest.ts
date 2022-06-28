@@ -62,7 +62,7 @@ export default async function handler(
           REQUESTER: 'Ronald MacDonald',
           VERIFIER: 'any',
           TIMELIMIT: false,
-          otherConditions: ['cerial killers not to bother']
+          otherConditions: ['cereal killers not to bother']
         }),
       );
     }))
