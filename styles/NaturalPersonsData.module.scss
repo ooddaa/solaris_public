@@ -5,24 +5,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 }
 
-.passports-data {
+.persons-data {
   width: 100%;
   margin-top: 20px;
   padding-top: 20px;
-}
-
-.passport {
-  padding: 10px 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.passport-card {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 10px
 }
 
 .data-column {

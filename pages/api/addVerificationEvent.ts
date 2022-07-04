@@ -56,13 +56,7 @@ export default async function handler(
             throw new Error(`api/addVerificationEvent: expected to receive verificationEvent.verificationRequestHash.\nverificationEvent: ${JSON.stringify(verificationEvent, null, 4)}`)
           }
 
-          // const ve = await engine.matchNodes([verificationEvent?.verificationRequest?.endNode],{
-          //   extract: true,
-          // })
-          // console.log(ve)
-          // const { ATTRIBUTE_HASH, REQUESTER, VERIFIER, _hash } = verificationEvent?.verificationRequest?.endNode.properties
-          // const ve = await mango.findNode(['VerificationRequest'], { ATTRIBUTE_HASH, REQUESTER, VERIFIER, _hash })
-          // console.log(ve)
+
 
           /* {
   VERIFIER: 'any',

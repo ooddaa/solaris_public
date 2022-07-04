@@ -42,6 +42,8 @@ export type Result = {
 
 /** I don't want to be passing Relationship[] around, do I? */
 export interface VerificationRequest {
+  // endNode === 'VerificationRequest' // see addNaturalPersonVerificationRequest
+  // _hash // verificationRequestHash: endNode.properties._hash,
   // who requested 
   // what is being requested
   // all ids of 
@@ -49,6 +51,8 @@ export interface VerificationRequest {
   // Attribute
   // REQUESTER
 }
+
+// const { ATTRIBUTE_HASH, REQUESTER, VERIFIER, TIMELIMIT, otherConditions, _hash, _uuid, _label, _labels, _date_created, _template } = verificationEvent?.verificationRequest?.endNode.properties
 
 export interface VerificationEvent {
   available: boolean;

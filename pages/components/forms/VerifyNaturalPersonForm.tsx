@@ -128,15 +128,6 @@ function VerificationRequest({
   );
 }
 
-// const updateVerifications = useCallback((newVerificationEvent: any) => {
-//   const rv = [...verifications, newVerificationEvent]
-//   setVerificationEvents(rv)
-//   console.log('updateVerifications:', rv)
-// }, [])
-// const contextValue = useMemo(() => {
-//   // setVerificationEvents()
-// }, [])
-
 /* verificationRequest is 
   Relationship {
     labels: [ 'HAS_VERIFICATION_REQUEST' ],

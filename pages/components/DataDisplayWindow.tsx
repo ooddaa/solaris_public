@@ -4,6 +4,7 @@ import { Prism } from "@mantine/prism";
 import { Tabs } from "@mantine/core";
 import PassportsData from './data/PassportsData'
 import NaturalPersonsData from './data/NaturalPersonsData'
+import VerificationRequestsData from './data/VerificationRequestsData'
 import type { Relationship } from '../types'
 
 interface DataDisplayWindowProps {
@@ -55,6 +56,9 @@ const DataDisplayWindow = ({ data, onVerificationRequest }: DataDisplayWindowPro
         </Tabs.Tab>
         <Tabs.Tab label="Persons">
           <NaturalPersonsData onVerificationRequest={onVerificationRequest}/>
+        </Tabs.Tab>
+        <Tabs.Tab label="VerificationRequests">
+          <VerificationRequestsData/>
         </Tabs.Tab>
       </Tabs>
     </div>

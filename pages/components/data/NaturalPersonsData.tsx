@@ -67,7 +67,7 @@ function NaturalPersonsData({
         );
       }
       const verificationRequests = result.data; // Relationship[]
-      console.log(verificationRequests);
+      // console.log(verificationRequests);
 
       /**
        * @todo Transform into a VerificationRequest[] before sending
@@ -186,9 +186,9 @@ const producePersonCard = (
     </div>
   );
   return (
-    <div key={i} className={styles.person}>
+    // <div key={i} className={styles.person}>
       <AccordionElement id={i} header={header} body={body} />
-    </div>
+    // </div>
   );
 };
 
