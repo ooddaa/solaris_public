@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styles from "../../../styles/NaturalPersonsData.module.scss";
+// import { stringify } from 'mango'
 import axios from "axios";
 import { isArray } from "lodash";
 import { AccordionElement } from "../AccordionElement";
-import type { EnhancedNode, Relationship } from "../../types";
+import type { EnhancedNode, Relationship, GetAllNaturalPersonsResponse, NaturalPersonStatistics } from "../../types";
 import { Button } from "@mantine/core";
 
 interface NaturalPersonsDataProps {
@@ -14,34 +15,26 @@ interface NaturalPersonsDataProps {
 function NaturalPersonsData({
   onVerificationRequest,
 }: NaturalPersonsDataProps) {
-  const [persons, setPersons] = useState<EnhancedNode[]>([]);
+  const [persons, setPersons] = useState<[EnhancedNode, NaturalPersonStatistics][]>([]);
   const [verify, toggleVerify] = useState<boolean>(false);
 
   const getAllNaturalPersons = async () => {
     try {
       const response = await axios.get("/api/getAllNaturalPersons");
-      const result = response?.data;
+      const result: GetAllNaturalPersonsResponse = response?.data;
       if (!result.success) {
         throw new Error(
-          `NaturalPersonsData.getAllNaturalPersons: result was not a success.\nresult: ${JSON.stringify(
-            result,
-            null,
-            5
-          )}`
+          `NaturalPersonsData.getAllNaturalPersons: result was not a success.\nresult: ${JSON.stringify(result, null, 4)}`
         );
       }
-      const allPersons = result.data;
+      const allPersons: [EnhancedNode, NaturalPersonStatistics][] = result.data;
       // console.log(allPersons)
 
       /* checks */
       if (!allPersons) return;
       if (!isArray(allPersons)) {
         throw new Error(
-          `NaturalPersonsData.getAllNaturalPersons: allPersons must be array.\n${JSON.stringify(
-            allPersons,
-            null,
-            5
-          )}`
+          `NaturalPersonsData.getAllNaturalPersons: allPersons must be array.\n${JSON.stringify(allPersons, null, 4)}`
         );
       }
       setPersons(allPersons);
@@ -63,11 +56,7 @@ function NaturalPersonsData({
       const result = response?.data;
       if (!result.success) {
         throw new Error(
-          `NaturalPersonsData.addNaturalPersonVerificationRequest: result was not a success.\nresult: ${JSON.stringify(
-            result,
-            null,
-            5
-          )}`
+          `NaturalPersonsData.addNaturalPersonVerificationRequest: result was not a success.\nresult: ${JSON.stringify(result, null, 4)}`
         );
       }
       const verificationRequests: Relationship[] = result.data; // Relationship[]
@@ -99,13 +88,14 @@ function NaturalPersonsData({
         className={`persons-data ${styles["persons-data"]} ${styles.container}`}
       >
         {persons && persons.length
-          ? persons.map((person, i) =>
+          ? persons.map(([person, stats], i) =>
               producePersonCard(
                 person,
                 i,
                 verify,
                 toggleVerify,
-                addNaturalPersonVerificationRequest
+                addNaturalPersonVerificationRequest,
+                stats.baseScore
               )
             )
           : `persons found: ${persons.length}`}
@@ -119,7 +109,8 @@ const producePersonCard = (
   i: number,
   verify: boolean,
   toggleVerify: Function,
-  addNaturalPersonVerificationRequest: Function
+  addNaturalPersonVerificationRequest: Function,
+  personVerificationScore: number, // make it simple atm
 ): JSX.Element => {
   /* 
     FIRST_NAME: 'lol',  // required to complete Passport, but not unique identifier of a Passport in Neo4j
@@ -133,6 +124,9 @@ const producePersonCard = (
   const header = `${properties.FIRST_NAME} ${properties.LAST_NAME}`;
   const body = (
     <div className={styles["person-card"]}>
+      <div className={styles["verification-score"]}>
+        Total score: {personVerificationScore}
+      </div>
       <div className={styles["data-column"]}>
         <table>
           <tbody>

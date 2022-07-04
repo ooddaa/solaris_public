@@ -1,22 +1,28 @@
 @use 'variables.module.scss';
 
+$margin-bottom: 20px;
+
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: $margin-bottom;
 }
 
 .persons-data {
   width: 100%;
-  margin-top: 20px;
-  padding-top: 20px;
+  margin-top: $margin-bottom;
+  padding-top: $margin-bottom;
+}
+
+.verification-score {
+  margin-bottom: $margin-bottom;
 }
 
 .data-column {
   overflow: scroll;
-  margin-bottom: 20px;
+  margin-bottom: $margin-bottom;
   table {
     td {
       margin: 10px;
@@ -24,7 +30,7 @@
     tbody {
       tr td:first-of-type {
         color: variables.$grey-primary;
-        padding-right: 20px;
+        padding-right: $margin-bottom;
       }
     }
   }
@@ -50,5 +56,5 @@
 }
 
 .getAllButton {
-  margin: 20px 0;
+  margin: $margin-bottom 0;
 }
