@@ -1,16 +1,51 @@
 
 @use "variables.module.scss";
 
+$margin-left: 20px;
+
 .verification-request-card {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  gap: $margin-left*2;
   width: 600px;
-  border: 1px solid blue;
-  padding: 20px;
+  box-shadow: 0 0 5px variables.$border-primary;
+  border-radius: 5px;
+  padding: $margin-left * 2;
+  margin: $margin-left;
 
   [class~="question"] {
     margin-bottom: 10px;
   }
 
+}
+
+.question {
+  line-height: 2;
+  
+  span {
+    border-radius: 5px;
+  }
+
+  [class~="attr"] {
+    font-weight: 600;
+    padding: 5px;
+  }
+  
+  [class~="attr-requester"] {
+    background-color: rgb(254, 249, 145);
+  }
+  
+  [class~="attr-owner"] {
+    background-color: rgb(254, 174, 145);
+  }
+  
+  [class~="attr-value"] {
+    background-color: rgb(254, 218, 145);
+  }
+
+  [class~="attr-key"] {
+    background-color: rgb(187, 254, 145);
+  }
 }
 
 .buttons {
@@ -20,6 +55,11 @@
   button {
     padding: 4px 8px;
     border: none;
+    border-radius: 5px;
+  }
+
+  button:active {
+    transform: scale(.99);
   }
 
   [class~="verification-result"] {
@@ -39,3 +79,8 @@
   }
 
 }
+
+.submit-btn {
+  margin-left: $margin-left;
+}
+

@@ -7,6 +7,7 @@ import { Relationship, VerificationEvent } from "../../types";
 import styles from "../../../styles/VerifyNaturalPersonForm.module.scss";
 import isArray from "lodash/isArray";
 import axios from 'axios'
+import { Button } from "@mantine/core"
 interface VerifyNaturalPersonFormProps {
   verificationRequests: Relationship[];
 }
@@ -60,7 +61,7 @@ export default function VerifyNaturalPersonForm({
             <VerificationRequest key={vr.properties._hash} verificationRequest={vr} />
           ))
         : "no verification requests"}
-      <button onClick={handleSubmit}>Submit</button>
+      <Button className={styles["submit-btn"]} onClick={handleSubmit}>Submit</Button>
     </VerificationRequestsContext.Provider>
   );
 }
@@ -131,14 +132,14 @@ function VerificationRequest({
   return (
     <div className="verification-request">
       <div className={styles["verification-request-card"]}>
-        <div className="question">
-          {endNode.properties.REQUESTER} wants to verify that{" "}
-          {(startNode.properties.OWNER as string).slice(0, 6)}&rsquo;s{" "}
-          {startNode.properties.KEY} is really{" "}
-          <i>{startNode.properties.VALUE}</i>.
+        <div className={styles["question"]}>
+          <span className="attr attr-requester">{endNode.properties.REQUESTER}</span> wants to verify that{" "}
+          <span className="attr attr-owner">{(startNode.properties.OWNER as string).slice(0, 6)}&rsquo;s</span>{" "}
+          <span className="attr attr-key">{startNode.properties.KEY}</span> is really{" "}
+          <span className='attr attr-value'>{startNode.properties.VALUE}</span>
         </div>
         <div className={styles["buttons"]}>
-          Do you concur?
+
           <button onClick={yes}>Yes</button>
           <button onClick={no}>No</button>
           <button onClick={skip}>Skip</button>
