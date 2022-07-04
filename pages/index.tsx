@@ -34,8 +34,6 @@ const Home: NextPage = () => {
         verificationRequests={verificationRequests}
       />
       <DataDisplayWindow 
-        // passports={passports}
-        // persons={persons}
         /* actions */
         onVerificationRequest={onVerificationRequest}
         /* data */

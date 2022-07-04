@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { log, Builder } from "mango";
 import { mango, engine }  from '../db/neoj4Config'
-import { EnhancedNode, Result } from '../types'
+import { EnhancedNode, Result, Relationship } from '../types'
 
 const builder = new Builder()
 /**
@@ -44,7 +44,6 @@ export default async function handler(
       relationships: { inbound: [], outbound: [] }
     }
     */
-  //  const owner = await mango.findNode(naturalPerson)
 
     const results: Result[] = await engine.enhanceNodes([naturalPerson])
     const enodes: EnhancedNode[] = results[0].data
@@ -53,16 +52,17 @@ export default async function handler(
 
     /* merge VerificationRequest */
 
-    const rv = await Promise.all(attributes.map(async (attribute: EnhancedNode) => {
+    const rv: Relationship[] = await Promise.all(attributes.map(async (attribute: EnhancedNode) => {
       return await mango.buildAndMergeRelationship(
         attribute, 
         { labels: ["HAS_VERIFICATION_REQUEST"] },
         builder.makeNode(["VerificationRequest"], {
           ATTRIBUTE_HASH: attribute.getHash(),
           REQUESTER: 'Ronald MacDonald',
+          // REQUESTER: 'Darth Vader',
           VERIFIER: 'any',
           TIMELIMIT: false,
-          otherConditions: ['cereal killers not to bother']
+          otherConditions: ['not really']
         }),
       );
     }))

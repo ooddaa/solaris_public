@@ -1,8 +1,9 @@
+
 @use "variables.module.scss";
 
 .verification-request-card {
   display: inline-block;
-  width: 400px;
+  width: 600px;
   border: 1px solid blue;
   padding: 20px;
 
@@ -11,8 +12,6 @@
   }
 
 }
-
-
 
 .buttons {
   display: flex;
@@ -33,6 +32,10 @@
   
   [class~="no"] {
     background-color: red;
+  }
+
+  [class~="skip"] {
+    background-color: yellow;
   }
 
 }

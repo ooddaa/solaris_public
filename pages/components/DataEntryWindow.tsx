@@ -17,7 +17,6 @@ const DataEntryWindow = ({
   addPassport,
   addNaturalPerson,
   verificationRequests,
-  // verifyNaturalPerson,
 }: DataEntryWindowProps) => {
   const [activeTab, setActiveTab] = useState(1);
 

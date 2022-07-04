@@ -26,6 +26,13 @@ export default function VerifyNaturalPersonForm({
     _thinkOfAGoodName(verificationEventsMap.set(key, value));
   };
 
+  const removeVerificationEventsMap = (value: VerificationEvent) => {
+    const key = value.verificationRequestHash;
+    if (typeof key !== "string") return;
+    verificationEventsMap.delete(key)
+    _thinkOfAGoodName(verificationEventsMap);
+  };
+
   const handleSubmit = async () => {
 
     try {
@@ -44,11 +51,13 @@ export default function VerifyNaturalPersonForm({
       value={{
         verificationEventsMap,
         setVerificationEventsMap,
+        removeVerificationEventsMap,
       }}
     >
       {verificationRequests && isArray(verificationRequests)
         ? verificationRequests.map((vr, i) => (
-            <VerificationRequest key={i} verificationRequest={vr} />
+          /** take unique hash so that items get re-rendered correctly */
+            <VerificationRequest key={vr.properties._hash} verificationRequest={vr} />
           ))
         : "no verification requests"}
       <button onClick={handleSubmit}>Submit</button>
@@ -62,15 +71,17 @@ function VerificationRequest({
   verificationRequest: Relationship;
 }): JSX.Element {
   const { labels, properties, startNode, endNode } = verificationRequest;
+  const [message, setMessage] = useState<"yes"|"no"|"skip"|null>(null)
   const [verificationEvent, setVerificationEvent] = useState<VerificationEvent>(
     {
       verificationRequestHash: endNode.properties._hash,
       available: false,
       result: null,
-      verifierCredentials: 'oda', // always me +)
+      // verifierCredentials: 'oda', 
+      verifierCredentials: 'Santa', 
     }
   );
-  const { setVerificationEventsMap } = useContext(VerificationRequestsContext);
+  const { verificationEventsMap, setVerificationEventsMap, removeVerificationEventsMap } = useContext(VerificationRequestsContext);
 
   const yes = () => {
     const ve = {
@@ -83,6 +94,7 @@ function VerificationRequest({
     setVerificationEvent(ve);
     console.log("yes", ve);
     setVerificationEventsMap(ve);
+    setMessage("yes")
   };
 
   const no = () => {
@@ -95,7 +107,24 @@ function VerificationRequest({
     setVerificationEvent(ve);
     console.log("no", ve);
     setVerificationEventsMap(ve);
+    setMessage("no")
   };
+
+  const skip = () => {
+    // needs to remove corresponding Yes/No choice if that has been registered
+    const ve = {
+      ...verificationEvent,
+      available: false,
+      result: null,
+      verificationRequest,
+    };
+    removeVerificationEventsMap(ve)
+    setMessage("skip")
+  }
+
+  const printVEs = () => {
+    console.log(verificationEventsMap)
+  }
 
   const addReason = (e: React.ChangeEventHandler<HTMLInputElement>) => {};
 
@@ -112,16 +141,16 @@ function VerificationRequest({
           Do you concur?
           <button onClick={yes}>Yes</button>
           <button onClick={no}>No</button>
-          {verificationEvent &&
-            verificationEvent.available &&
-            (verificationEvent.result ? (
-              <div className="verification-result yes">ok</div>
-            ) : (
-              <div className="verification-result no">
-                why?
-                {/* <input type='text' name="verification-result-reason" onChange={addReason}/> */}
-              </div>
-            ))}
+          <button onClick={skip}>Skip</button>
+          <button onClick={printVEs}>printVEs</button>
+
+            { message && (
+              message === 'yes' ? <div className="verification-result yes">ok</div> : message === 'no' ? <div className="verification-result no">
+              no
+            </div> : <div className="verification-result skip">
+              skip
+            </div>
+            )}
         </div>
       </div>
     </div>

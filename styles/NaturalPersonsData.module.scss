@@ -16,10 +16,16 @@
 
 .data-column {
   overflow: scroll;
-
+  margin-bottom: 20px;
   table {
     td {
       margin: 10px;
+    }
+    tbody {
+      tr td:first-of-type {
+        color: variables.$grey-primary;
+        padding-right: 20px;
+      }
     }
   }
 }

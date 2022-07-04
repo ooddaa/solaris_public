@@ -3,7 +3,7 @@ import styles from "../../../styles/NaturalPersonsData.module.scss";
 import axios from "axios";
 import { isArray } from "lodash";
 import { AccordionElement } from "../AccordionElement";
-import type { EnhancedNode } from "../../types";
+import type { EnhancedNode, Relationship } from "../../types";
 import { Button } from "@mantine/core";
 
 interface NaturalPersonsDataProps {
@@ -50,6 +50,10 @@ function NaturalPersonsData({
     }
   };
 
+  /**
+   * This grabs all persons attributes and creates VerificationRequest for each. 
+   * @param {EnhancedNode} person 
+   */
   const addNaturalPersonVerificationRequest = async (person: EnhancedNode) => {
     try {
       const response = await axios.post(
@@ -66,10 +70,12 @@ function NaturalPersonsData({
           )}`
         );
       }
-      const verificationRequests = result.data; // Relationship[]
+      const verificationRequests: Relationship[] = result.data; // Relationship[]
       // console.log(verificationRequests);
 
       /**
+       * Once we've got back results, we want to render them in DataEntryWindow for user to interact with them.
+       * onVerificationRequest just sets verificationRequests state in Parent state holder - index.tsx. verificationRequests is passed to DataDisplayWindow->VerifyNaturalPersonForm.
        * @todo Transform into a VerificationRequest[] before sending
        */
       onVerificationRequest(verificationRequests);
@@ -108,8 +114,6 @@ function NaturalPersonsData({
   );
 }
 
-const PersonCard = () => {};
-
 const producePersonCard = (
   person: EnhancedNode,
   i: number,
@@ -133,7 +137,7 @@ const producePersonCard = (
         <table>
           <tbody>
             <tr>
-              <td>First Name</td>
+              <td style={{color: 'grey'}}>First Name</td>
               <td>{properties.FIRST_NAME}</td>
               {verify && (
                 <td>
@@ -186,7 +190,9 @@ const producePersonCard = (
     </div>
   );
   return (
+    <div key={i}>
       <AccordionElement id={i} header={header} body={body} />
+    </div>
   );
 };
 
