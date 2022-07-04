@@ -186,9 +186,7 @@ const producePersonCard = (
     </div>
   );
   return (
-    // <div key={i} className={styles.person}>
       <AccordionElement id={i} header={header} body={body} />
-    // </div>
   );
 };
 
