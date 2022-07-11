@@ -39,10 +39,10 @@ const DataEntryWindow = ({
               tabsList: { flexWrap: "nowrap", overflow: "scroll" },
             }}
           >
-            <Tabs.Tab label="Add NP">
+            <Tabs.Tab label="Add Person">
               <NaturalPersonForm addPerson={addNaturalPerson} />
             </Tabs.Tab>
-            <Tabs.Tab label="Verify NP">
+            <Tabs.Tab label="Verify Person">
               <VerifyNaturalPersonForm verificationRequests={verificationRequests} />
             </Tabs.Tab>
           </Tabs>

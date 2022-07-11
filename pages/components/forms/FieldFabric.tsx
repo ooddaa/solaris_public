@@ -11,6 +11,7 @@ export interface FieldAttributeProps {
   label: string;
   options?: string[];
 }
+
 export interface TextFieldAttributeProps extends FieldAttributeProps {
   type: "text" | "textarea";
 }
@@ -18,6 +19,7 @@ export interface TextFieldAttributeProps extends FieldAttributeProps {
 export interface DateFieldAttributeProps extends FieldAttributeProps {
   type: "date";
 }
+
 export interface SelectFieldAttributeProps extends FieldAttributeProps {
   type: "select";
   options: string[];
@@ -30,31 +32,25 @@ export interface SelectFieldAttributeProps extends FieldAttributeProps {
 export function fieldFabric(
   attributes: FieldAttributeProps[],
   formik: FormikProps<any>
-) {
-  // let element;
-  // if (type === 'date') {
-  //   element = <DatePicker {...formik.getFieldProps(name)} />
-  // } else if (type === 'text') {
-  //   element = <TextInput className={styles["text-input"]} {...formik.getFieldProps(name)} />
-  // } else if (type === 'select') {
-  //   element = <Select className={styles["text-input"]} {...formik.getFieldProps(name)} />
-  // }
-  const makeTextInput = MyTextInput(formik);
-  const makeDateInput = MyDateInput(formik);
-  const makeSelectInput = MySelectInput(formik);
+): JSX.Element[] {
+
+  const map = {
+    "text": MyTextInput(formik),
+    "date": MyDateInput(formik),
+    "select": MySelectInput(formik),
+    "textarea": (config: any) => null,
+  }
+  
   return attributes.map(({ type, ...attr }) => {
-    if (type === "text") {
-      return makeTextInput({ type, ...attr });
-    } else if (type === "date") {
-      return makeDateInput({ type, ...attr });
-    } else if (type === "select") {
-      return makeSelectInput({ type, ...attr });
+    if (type !== undefined) {
+      return map[type]({ type, ...attr })
     }
+    throw new Error(`fieldFabric: type was undefined.\ntype: ${JSON.stringify(type, null, 4)}`)
   });
 }
 
 function MyTextInput(formik: FormikProps<any>): Function {
-  return function inner({ label, name, id, type }: TextFieldAttributeProps) {
+  return function inner({ label, name, id, type }: TextFieldAttributeProps): JSX.Element {
     if (!["text", "textarea"].includes(type)) {
       throw new Error(
         `MyTextInput: unsupported type ${type}. Must be text | textarea.`
@@ -85,7 +81,7 @@ function MyTextInput(formik: FormikProps<any>): Function {
           }
         >
           <TextInput
-            className={styles["text-input"]}
+            // className={styles["text-input"]}
             {...formik.getFieldProps(name)}
           />
         </Tooltip>
@@ -95,7 +91,7 @@ function MyTextInput(formik: FormikProps<any>): Function {
 }
 
 function MyDateInput(formik: FormikProps<any>): Function {
-  return function inner({ label, name, id, type }: DateFieldAttributeProps) {
+  return function inner({ label, name, id, type }: DateFieldAttributeProps): JSX.Element {
     if (!["date"].includes(type)) {
       throw new Error(`MyDateInput: unsupported type ${type}. Must be date.`);
     }
@@ -124,7 +120,7 @@ function MyDateInput(formik: FormikProps<any>): Function {
           }
         >
           <input
-            className={styles["date-input"]}
+            // className={styles["date-input"]}
             type="date"
             {...formik.getFieldProps(name)}
           />
@@ -146,7 +142,7 @@ function MySelectInput(formik: FormikProps<any>): Function {
     id,
     type,
     options,
-  }: SelectFieldAttributeProps) {
+  }: SelectFieldAttributeProps): JSX.Element {
     if (!["select"].includes(type)) {
       throw new Error(
         `MySelectInput: unsupported type ${type}. Must be select.`
