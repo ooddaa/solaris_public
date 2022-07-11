@@ -5,6 +5,11 @@ import { log, Builder } from "mango";
 import { mango, engine }  from '../db/neoj4Config'
 import { EnhancedNode, Relationship, Result, VerificationEvent } from '../types'
 
+type VerificationEventResponse = {
+  success: boolean
+  data: any[]
+}
+
 const builder = new Builder()
 /**
  * VerificationEvent
@@ -29,7 +34,7 @@ verificationRequest: {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Result>
+  res: NextApiResponse<VerificationEventResponse>
 ) {
 
   try {
@@ -56,30 +61,9 @@ export default async function handler(
             throw new Error(`api/addVerificationEvent: expected to receive verificationEvent.verificationRequestHash.\nverificationEvent: ${JSON.stringify(verificationEvent, null, 4)}`)
           }
 
-
-
-          /* {
-  VERIFIER: 'any',
-  _hash: '9a39aedc2e7fb8168a8706f7ca5f0c37391938f1579e6b8c579809366560e0a6',
-  _template: 'Node',
-  _date_created: [ 2022, 6, 28, 2, 1656422443845 ],
-  TIMELIMIT: false,
-  ATTRIBUTE_HASH: '15f5a8ea06fb70ece116fb600f557d33c1a0083fd1101d203864459b3709d60b',
-  REQUESTER: 'Ronald MacDonald',
-  otherConditions: [ 'cereal killers not to bother' ],
-  _uuid: '7067554b-acc9-4e6b-a7ba-c0855ee84ccd',
-  _label: 'VerificationRequest',
-  _labels: [ 'VerificationRequest' ]
-} */
-
           const { ATTRIBUTE_HASH, REQUESTER, VERIFIER, TIMELIMIT, otherConditions, _hash, _uuid, _label, _labels, _date_created, _template } = verificationEvent?.verificationRequest?.endNode.properties
-          // log(verificationEvent?.verificationRequest?.endNode.properties)
-
-          /**@todo why this creates VerificationRequest duplicates ??? */
-          // const partnerNode = builder.makeNode(["VerificationRequest"], verificationEvent?.verificationRequest?.endNode.properties)
-          // const partnerNode = builder.makeNode(["VerificationRequest"], { ...verificationEvent?.verificationRequest?.endNode.properties })
           
-          /** whilst this works fine */
+          /** describe the VerificationRequest that we target */
           const partnerNode = builder.makeNode(["VerificationRequest"], {
             ATTRIBUTE_HASH,
             REQUESTER,
@@ -94,7 +78,7 @@ export default async function handler(
             _template,
           })
 
-
+          /**@todo atm there could be two VE/Vres per Verifier (true and false). We need to make sure there is max one Vres. */
           // log('endNode', verificationEvent?.verificationRequest?.endNode)
           const rv = await mango.buildAndMergeEnhancedNode({
             labels: ["VerificationEvent"],
@@ -107,10 +91,7 @@ export default async function handler(
               {
                 labels: ["IN_RESPONSE_TO"],
                 /** @todo anything useful as rel props? */
-                // properties: {}, 
-                // partnerNode: verificationEvent?.verificationRequest?.endNode,
                 partnerNode: partnerNode,
-                // direction: "outbound",
               }
             ]
           })
@@ -126,3 +107,18 @@ export default async function handler(
     res.status(400).json({ success: false, data: [] })
   }
 }
+
+
+          /* {
+  VERIFIER: 'any',
+  _hash: '9a39aedc2e7fb8168a8706f7ca5f0c37391938f1579e6b8c579809366560e0a6',
+  _template: 'Node',
+  _date_created: [ 2022, 6, 28, 2, 1656422443845 ],
+  TIMELIMIT: false,
+  ATTRIBUTE_HASH: '15f5a8ea06fb70ece116fb600f557d33c1a0083fd1101d203864459b3709d60b',
+  REQUESTER: 'Ronald MacDonald',
+  otherConditions: [ 'cereal killers not to bother' ],
+  _uuid: '7067554b-acc9-4e6b-a7ba-c0855ee84ccd',
+  _label: 'VerificationRequest',
+  _labels: [ 'VerificationRequest' ]
+} */
