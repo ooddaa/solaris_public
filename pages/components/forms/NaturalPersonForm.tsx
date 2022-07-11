@@ -106,8 +106,8 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
     // )
     const fields: FieldAttributeProps[] = [
       {
-        type: "text",
-        name: "whohohoh",
+        type: "text", // MyDynamicText <input handleKeyInput/> <input handleValueInput/> 
+        name: "whohohoh", // Symbol.species?
         label: "aosdaoi",
       }
     ]
@@ -150,10 +150,14 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
                 </div>
 
                 {/* add hoc props */}
-                <div className={styles.adhocFields}>
+                <div className={styles.adhocFieldsContainer}>
                   {/* <fieldset>{fieldFabric(personal, formik)}</fieldset> */}
+                  <fieldset>
                   <Button onClick={() => generateAdhocField(formik)}>Add adhoc field</Button>
-                  {adHocFields.map((ahf:JSX.Element) => ahf)}
+                    <div className={styles.adhocFields}>
+                      {adHocFields.map((ahf:JSX.Element) => ahf)}
+                    </div>
+                  </fieldset>
                 </div>
               </div>
 

@@ -32,8 +32,12 @@ export default async function handler(
         const _hash = enode.getHash()
         const query = _constructQuery(_hash)
         const result = await engine.runQuery({ query, raw: true })
-        const score = result.getData()[0]["_fields"][0]
-        const stats: NaturalPersonStatistics = { _hash, baseScore: score[1].low }
+        let score = [{ low: 0 }]
+        const stats: NaturalPersonStatistics = { _hash, baseScore: score[1]?.low || 0}
+        if (result.getData() && result.getData()[0] && result.getData()[0]["_fields"]) {
+          score = result.getData()[0]["_fields"][0]
+        }
+        
         return stats
       })
     )

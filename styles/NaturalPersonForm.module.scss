@@ -40,11 +40,19 @@
   gap: 50px;
 }
 
-.adhocFields {
+.adhocFieldsContainer {
   display: flex;
   flex-direction: column;
   gap: 50px;
-  // background-color: red;
+}
+
+.adhocFields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 425px;
+  flex-shrink: 0;
+  overflow: scroll;
 }
 
 .adHocField {
