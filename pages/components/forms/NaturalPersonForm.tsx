@@ -10,7 +10,6 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import { fieldFabric, FieldAttributeProps } from "./FieldFabric";
 import axios from "axios";
 import { Button } from "@mantine/core";
-import identity from "lodash/identity";
 import findIndex from "lodash/findIndex";
 import { v4 as uuidv4 } from "uuid";
 
@@ -29,7 +28,8 @@ interface AdhocValue {
   value: string;
 }
 interface AdhocFieldContainer {
-  key: AdhocKey, value: AdhocValue
+  key: AdhocKey;
+  value: AdhocValue;
 }
 
 const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
@@ -105,10 +105,10 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
 
   /**
    * @because I need to control the inputs created with generateAdhocField. writeToNeo4j will transform each AdhocFieldContainer into an additional key-value pair on values object and send to API to be written to Neo4j.
-   * 
-   * @param type 
-   * @param e 
-   * @param uuid 
+   *
+   * @param type
+   * @param e
+   * @param uuid
    */
   const handleChange = (
     type: "key" | "value",
@@ -116,27 +116,28 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
     uuid: string
   ) => {
     const newAdhocFields: any[] = [...adHocFields];
-    const index = findIndex(
-      newAdhocFields,
-      (adHocField) => {
-        console.log(adHocField)
-        return adHocField[type]['uuid'] === uuid
-      }
-    );
+    const index = findIndex(newAdhocFields, (adHocField) => {
+      console.log(adHocField);
+      return adHocField[type]["uuid"] === uuid;
+    });
 
     if (index === -1) {
       throw new Error(
-        `uuid ${uuid} was not found among adHocFields.\nadHocFields ${JSON.stringify(adHocFields, null, 4)}`
+        `uuid ${uuid} was not found among adHocFields.\nadHocFields ${JSON.stringify(
+          adHocFields,
+          null,
+          4
+        )}`
       );
     }
 
-    newAdhocFields[index][type]['value'] = e.target["value"];
+    newAdhocFields[index][type]["value"] = e.target["value"];
     setAdHocFileds(newAdhocFields);
   };
 
   /**
    * @because I need to generate two input fields - to grab "key" and "value" - user can enter arbitrary attributes and get those stored in Neo4j.
-   * @param formik 
+   * @param formik
    */
   const generateAdhocField = (formik: any) => {
     /**
@@ -154,12 +155,23 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
 
   const writeToNeo4j = async (values: NaturalPersonProps) => {
     try {
-      console.log('main values', values);
-      console.log('adHoc values', adHocFields);
       /** now glue together adHocFields and add to values */
-      // const data = await axios.post("/api/addNaturalPerson", values);
-      // console.log(data);
-      // addPerson(JSON.stringify(data?.data, null, 4));
+      const adHocValues: { [key: string]: any } = adHocFields.reduce(
+        (acc, { key, value }) => {
+          acc[key.value] = value.value;
+          return acc;
+        },
+        {} as { [key: string]: any }
+      );
+      const dataToWrite = {
+        ...adHocValues,
+        ...values,
+      };
+
+      console.log("data", dataToWrite);
+      const data = await axios.post("/api/addNaturalPerson", dataToWrite);
+      console.log(data);
+
     } catch (error) {
       console.error(error);
     }
@@ -182,28 +194,37 @@ const NaturalPersonForm = ({ addPerson }: NaturalPersonFormProps) => {
                 <div className={styles.mainFields}>
                   {/* PERSONAL */}
                   <fieldset>
-                    {/* <legend>Personal</legend> */}
                     {fieldFabric(personal, formik)}
                   </fieldset>
                 </div>
 
                 {/* add hoc props */}
                 <div className={styles.adhocFieldsContainer}>
-                  {/* <fieldset>{fieldFabric(personal, formik)}</fieldset> */}
+
                   <fieldset>
                     <Button onClick={() => generateAdhocField(formik)}>
                       Add adhoc field
                     </Button>
                     <div className={styles.adhocFields}>
-                      {/* {adHocFields.map(identity)} */}
-                      {/* {adHocFields.map((ahf:JSX.Element) => ahf)} */}
                       {adHocFields.map(({ key, value }) => {
-                          return <div key={key.uuid}>
-                            {/* {`${key.uuid === value.uuid}`} */}
-                            <input type='text' value={key.value} onChange={(e) => handleChange(key.type, e, key.uuid)}/>
-                            <input type='text' value={value.value} onChange={(e) => handleChange(value.type, e, value.uuid)}/>
-
+                        return (
+                          <div key={key.uuid}>
+                            <input
+                              type="text"
+                              value={key.value}
+                              onChange={(e) =>
+                                handleChange(key.type, e, key.uuid)
+                              }
+                            />
+                            <input
+                              type="text"
+                              value={value.value}
+                              onChange={(e) =>
+                                handleChange(value.type, e, value.uuid)
+                              }
+                            />
                           </div>
+                        );
                       })}
                     </div>
                   </fieldset>
