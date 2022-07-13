@@ -63,12 +63,12 @@ export interface VerificationEvent {
   verifierCredentials: string; // lets sound smart, shall we. This needs to be a (User { _hash }), but for now it would be just a string mapped to (User { USER_ID: verifierCredentials }) of who actually provides the VerificationEvent. Not sure why I'm fucking up the names, but it's late and I'm tired.
 }
 
-export interface NaturalPersonStatistics {
+export interface NaturalPersonVerificationScore {
   _hash: string
   baseScore: number
 }
 
 export type GetAllNaturalPersonsResponse = {
   success: boolean
-  data: [EnhancedNode, NaturalPersonStatistics][]
+  data: [EnhancedNode, NaturalPersonVerificationScore][]
 }
